@@ -22,8 +22,19 @@
 *.la
 *.a
 *.lib
+packages/*
 
 # Executables
 *.exe
 *.out
 *.app
+*.iobj
+*.ipdb
+*.pdb
+*.tlog
+*.log
+*.targets
+*.db
+*.opendb
+*.suo
+*.user
