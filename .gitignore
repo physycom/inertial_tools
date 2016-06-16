@@ -38,3 +38,4 @@ packages/*
 *.opendb
 *.suo
 *.user
+*.idb
