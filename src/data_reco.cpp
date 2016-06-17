@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
     init_file = argv[1];
     data_file = argv[2];
   }
-  else if (argc == 2 && std::string(argv[1]) == "-init_t" ) {
+  else if (argc == 2 && std::string(argv[1]) == "-init_t") {
     std::cout << "Generating initial condition JSON template \"init.json\"" << std::endl << std::endl;
     std::ofstream init_json("init.json");
     init_json << R"({
@@ -75,11 +75,14 @@ int main(int argc, char **argv) {
   "theta0" : 0.0,
   "v0_x" : 0.0,
   "v0_y" : 0.0,
-  "dt"   : 1e-3 // [optional] use it to force the timestamp to be exactly equally spaced
+  "dt"   : 1e-3, // [optional] use it to force the timestamp to be exactly equally spaced
+  "acc_conversion" : [ 9.81, 9.81, 9.81],
+  "gyr_conversion" : [ 0.017453, 0.017453, 0.017453],
+  "speed_conversion" : 0.2778
 }
 )";
     init_json.close();
-    usage(argv[0]);
+    exit(-1);
   }
   else {
     std::cout << "ERROR: Wrong command line parameters. Read usage and relaunch properly." << std::endl;
@@ -92,10 +95,10 @@ int main(int argc, char **argv) {
   vector<double> timestep, omega_z, a_local_x, a_local_y;
   vector<double> theta, a_x, a_y, v_x, v_y, r_x, r_y;
   double theta0, v0_x, v0_y, r0_x, r0_y, dt = 0.0;
-  double acc_conversion, gyr_conversion, speed_conversion;
+  double acc_conversion[3], gyr_conversion[3], speed_conversion;
 
   // Imaginary Unit
-  complex<double> IU(0, 1);   
+  complex<double> IU(0, 1);
 
   // parsing initial condition file
   jsoncons::json init;
@@ -112,19 +115,29 @@ int main(int argc, char **argv) {
   v0_x = init.has_member("v0_x") ? init["v0_x"].as<double>() : 0.0;
   v0_y = init.has_member("v0_y") ? init["v0_y"].as<double>() : 0.0;
   dt = init.has_member("dt") ? init["dt"].as<double>() : 1.e-3;
+  speed_conversion = init.has_member("speed_conversion") ? init["speed_conversion"].as<double>() : 1/3.6;
+  for (int i = 0; i < 3; i++) {
+    acc_conversion[i] = init.has_member("acc_conversion") ? init["acc_conversion"][i].as<double>() : GRAV;
+    gyr_conversion[i] = init.has_member("gyr_conversion") ? init["gyr_conversion"][i].as<double>() : 1 / RAD_TO_DEG;
+  }
+
 
   std::cout << "Inital condition : " << data_file << std::endl
     << "r0 = ( " << r0_x << " , " << r0_y << " )" << std::endl
     << "v0 = ( " << v0_x << " , " << v0_y << " )" << std::endl
     << "theta0 = " << theta0 << std::endl
     << "dt = " << (init.has_member("dt") ? std::to_string(dt) : "dynamic") << std::endl;
+  std::cout << "Conversion factors : " << std::endl;
+  std::cout << "Speed " << speed_conversion << std::endl;
+  std::cout << "Acc [ "; for (int i = 0; i < 3; i++) std::cout << acc_conversion[i] << ((i == 2) ? " ]" : " , "); std::cout << std::endl;
+  std::cout << "Gyr [ "; for (int i = 0; i < 3; i++) std::cout << gyr_conversion[i] << ((i == 2) ? " ]" : " , "); std::cout << std::endl;
 
   // parsing data file
   vector< vector<string> > file_tokens;
   file_tokens = Read_from_file(data_file);
   double timenow = -dt;
   for (size_t i = 0; i < file_tokens.size(); i++) {
-    if (init.has_member("dt") ) {
+    if (init.has_member("dt")) {
       timenow += dt;
       timestep.push_back(timenow);
     }
@@ -138,9 +151,9 @@ int main(int argc, char **argv) {
 
   //////// PHYSICS 
   // converting data to SI units
-  std::transform(omega_z.begin(), omega_z.end(), omega_z.begin(), bind1st(multiplies<double>(), 1./RAD_TO_DEG));   // omega_z MUST be in RADIANS
-  std::transform(a_local_x.begin(), a_local_x.end(), a_local_x.begin(), bind1st(multiplies<double>(), -GRAV));   // a_x MUST be in m/s^2
-  std::transform(a_local_y.begin(), a_local_y.end(), a_local_y.begin(), bind1st(multiplies<double>(), -GRAV));   // a_y MUST be in m/s^2
+  std::transform(omega_z.begin(), omega_z.end(), omega_z.begin(), bind1st(multiplies<double>(), gyr_conversion[2]));         // omega_z MUST be in RADIANS
+  std::transform(a_local_x.begin(), a_local_x.end(), a_local_x.begin(), bind1st(multiplies<double>(), acc_conversion[0]));   // a_x MUST be in m/s^2
+  std::transform(a_local_y.begin(), a_local_y.end(), a_local_y.begin(), bind1st(multiplies<double>(), acc_conversion[1]));   // a_y MUST be in m/s^2
 
   // integrators
   theta = Integrate(timestep, omega_z, theta0);

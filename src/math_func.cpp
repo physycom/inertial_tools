@@ -23,7 +23,7 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #include "math_lib.h"
 #include "params.h"
 
-std::vector<double> Integrate(std::vector<double> &x, std::vector<double> &f, double F0 = 0) {
+std::vector<double> Integrate(std::vector<double> &x, std::vector<double> &f, double F0) {
   std::vector<double> F;
   F.push_back(F0);
   double dx, df, sum = F[0];

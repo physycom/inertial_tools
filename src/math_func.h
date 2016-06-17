@@ -21,7 +21,7 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 
 #include "math_struct.h"
 
-std::vector<double> Integrate(std::vector<double> &x, std::vector<double> &f, double F0);
+std::vector<double> Integrate(std::vector<double> &x, std::vector<double> &f, double F0 = 0);
 
 std::vector< std::vector<double> > rotate_inertial(std::vector< std::vector<double> > data, MAT3D rotation);
 

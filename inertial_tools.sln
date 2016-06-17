@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Data Filter", "Data Filter\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Data Purge", "Data Purge\Data Purge.vcxproj", "{C9E8254D-265D-4C4E-BCE3-DAD7CFC91D6B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Speed Compare", "Speed Compare\Speed Compare.vcxproj", "{76F2B025-50F1-4D2A-A47D-9AF8EB66EAFE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -71,6 +73,14 @@ Global
 		{C9E8254D-265D-4C4E-BCE3-DAD7CFC91D6B}.Release|x64.Build.0 = Release|x64
 		{C9E8254D-265D-4C4E-BCE3-DAD7CFC91D6B}.Release|x86.ActiveCfg = Release|Win32
 		{C9E8254D-265D-4C4E-BCE3-DAD7CFC91D6B}.Release|x86.Build.0 = Release|Win32
+		{76F2B025-50F1-4D2A-A47D-9AF8EB66EAFE}.Debug|x64.ActiveCfg = Debug|x64
+		{76F2B025-50F1-4D2A-A47D-9AF8EB66EAFE}.Debug|x64.Build.0 = Debug|x64
+		{76F2B025-50F1-4D2A-A47D-9AF8EB66EAFE}.Debug|x86.ActiveCfg = Debug|Win32
+		{76F2B025-50F1-4D2A-A47D-9AF8EB66EAFE}.Debug|x86.Build.0 = Debug|Win32
+		{76F2B025-50F1-4D2A-A47D-9AF8EB66EAFE}.Release|x64.ActiveCfg = Release|x64
+		{76F2B025-50F1-4D2A-A47D-9AF8EB66EAFE}.Release|x64.Build.0 = Release|x64
+		{76F2B025-50F1-4D2A-A47D-9AF8EB66EAFE}.Release|x86.ActiveCfg = Release|Win32
+		{76F2B025-50F1-4D2A-A47D-9AF8EB66EAFE}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
