@@ -48,7 +48,7 @@ vector< vector<string> > Read_from_file(string file_name, char compress = 'c') {
     cin.get();
     exit(777);
   }
-  else { cout << "SUCCESS: file " << file_name << " opened!\n"; }
+//  else { cout << "SUCCESS: file " << file_name << " opened!\n"; }
   while (!data_file.eof()) {
     line.clear();
     tokens.clear();
