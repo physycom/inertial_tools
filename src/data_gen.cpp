@@ -164,7 +164,7 @@ int main(int argc, char **argv) {
   char out_name[20]; sprintf(out_name, "data_lab.txt");
   FILE * out_data = fopen(out_name, "w");
   fprintf(out_data, "#%5s %10s %10s %10s %10s %10s %10s %10s %10s %10s\n", "Index", "t", "r_x", "r_y", "v_x", "v_y", "a_x", "a_y", "theta", "omega");
-  for (size_t i = 0; i < t.size(); i++) fprintf(out_data, "%6d %10.6lf %10.6lf %10.6lf %10.6lf %10.6lf %10.6lf %10.6lf %10.6lf %10.6lf\n",
+  for (size_t i = 0; i < t.size(); i++) fprintf(out_data, "%6zu %10.6lf %10.6lf %10.6lf %10.6lf %10.6lf %10.6lf %10.6lf %10.6lf %10.6lf\n",
     i, t[i], r_x[i], r_y[i], v_x[i], v_y[i], a_x[i], a_y[i], theta[i], Omega[i]);
   fclose(out_data);
 
@@ -179,7 +179,7 @@ int main(int argc, char **argv) {
 
   out_data = fopen("data_loc.txt", "w");
   fprintf(out_data, "#%5s %16s %16s %16s %16s \n", "i", "t", "a_t", "a_n", "omega_z");
-  for (size_t i = 0; i < t.size(); i++) fprintf(out_data, "%6d %16.10lf %16.10lf %16.10lf %16.10lf\n",
+  for (size_t i = 0; i < t.size(); i++) fprintf(out_data, "%6zu %16.10lf %16.10lf %16.10lf %16.10lf\n",
     i, t[i], a_t[i], a_n[i], Omega[i]);
   fclose(out_data);
 

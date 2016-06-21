@@ -176,7 +176,7 @@ int main(int argc, char **argv) {
   std::string output = data_file.substr(0, data_file.size() - 4) + "_trajectory.txt";
   FILE * out_data = fopen(output.c_str(), "w");
   fprintf(out_data, "#%5s %10s %10s %10s %10s %10s %10s %10s %10s %10s\n", "Index", "Time", "r_x", "r_y", "v_x", "v_y", "a_x", "a_y", "theta_z", "w_z");
-  for (size_t i = 0; i < r_x.size(); i++) fprintf(out_data, "%6d %10.6lf %10.6lf %10.6lf %10.6lf %10.6lf %10.6lf %10.6lf %10.6lf %10.6lf\n",
+  for (size_t i = 0; i < r_x.size(); i++) fprintf(out_data, "%6zu %10.6lf %10.6lf %10.6lf %10.6lf %10.6lf %10.6lf %10.6lf %10.6lf %10.6lf\n",
     i, timestep[i] - timestep[0], r_x[i], r_y[i], v_x[i], v_y[i], a_x[i], a_y[i], theta[i], omega_z[i]);
   fclose(out_data);
   std::cout << "Created output data file : " << output << std::endl;

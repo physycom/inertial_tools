@@ -17,10 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 ***************************************************************************/
 
-#ifdef _MSC_VER
-#define _CRT_SECURE_NO_WARNINGS  // MVS C warnings shut upper
-#define _SCL_SECURE_NO_WARNINGS  // MVS C warnings shut upper
-#endif
+
 
 #include <iostream>
 #include <fstream>

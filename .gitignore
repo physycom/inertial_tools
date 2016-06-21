@@ -39,3 +39,4 @@ packages/*
 *.suo
 *.user
 *.idb
+*.ilk
