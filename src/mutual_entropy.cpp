@@ -140,7 +140,7 @@ int main(int argc, char **argv) {
   double gz_max = *gz_mm.second;
 
   // binning
-  vector<vector<int>> counter_ay_ax, counter_ay_gz;
+  vector<vector<int>> counter_ax_gz, counter_ay_gz;
   switch (mode) {
   case DYNAMIC_BIN:
   {
@@ -173,7 +173,7 @@ int main(int argc, char **argv) {
     //std::cout << "AY_PIVOT : "; for (auto p : ay_pivot) std::cout << p << "   "; std::cout << std::endl;
     //std::cout << "GZ_PIVOT : "; for (auto p : gz_pivot) std::cout << p << "   "; std::cout << std::endl;
 
-    counter_ay_ax.resize(bin_number); for (auto &i : counter_ay_ax) i.resize(bin_number, 0);
+    counter_ax_gz.resize(bin_number); for (auto &i : counter_ax_gz) i.resize(bin_number, 0);
     counter_ay_gz.resize(bin_number); for (auto &i : counter_ay_gz) i.resize(bin_number, 0);
 
     int ax_index, ay_index, gz_index;
@@ -183,7 +183,7 @@ int main(int argc, char **argv) {
       for (size_t j = 0; j < gz_pivot.size(); j++) if (gz[i] <= gz_pivot[j]) { gz_index = j; break; }
 
 //      std::cout << i << "\t" << ax_index << "\t" << ay_index << "\t" << gz_index << "\n";
-      counter_ay_ax[ay_index][ax_index]++;
+      counter_ax_gz[ay_index][ax_index]++;
       counter_ay_gz[ay_index][gz_index]++;
     }
 
@@ -207,10 +207,10 @@ int main(int argc, char **argv) {
     std::cout << "GZ range [ " << gz_min << " , " << gz_max << " ]\tbin_w: " << gz_binw << std::endl;
 
     // counting frequencies
-    counter_ay_ax.resize(bin_number); for (auto &i : counter_ay_ax) i.resize(bin_number, 0);   // improve this by maybe splitting the switch
+    counter_ax_gz.resize(bin_number); for (auto &i : counter_ax_gz) i.resize(bin_number, 0);   // improve this by maybe splitting the switch
     counter_ay_gz.resize(bin_number); for (auto &i : counter_ay_gz) i.resize(bin_number, 0);
     for (size_t i = 0; i < ay.size(); i++) {
-      counter_ay_ax[size_t((ay[i] - ay_min) / ay_binw)][size_t((ax[i] - ax_min) / ax_binw)]++;
+      counter_ax_gz[size_t((ay[i] - ay_min) / ay_binw)][size_t((ax[i] - ax_min) / ax_binw)]++;
       counter_ay_gz[size_t((ay[i] - ay_min) / ay_binw)][size_t((gz[i] - gz_min) / gz_binw)]++;
     }
 
@@ -221,15 +221,14 @@ int main(int argc, char **argv) {
   }
 
   // probability densities
-  std::vector<double> p_ax(bin_number, 0), p_ay_a(bin_number, 0), p_ay_g(bin_number, 0), p_gz(bin_number, 0);
-  std::vector<std::vector<double>> p_ay_ax(bin_number, std::vector<double>(bin_number, 0.)), p_ay_gz(bin_number, std::vector<double>(bin_number, 0.));
+  std::vector<double> p_ax(bin_number, 0), p_ay(bin_number, 0), p_gz(bin_number, 0);
+  std::vector<std::vector<double>> p_ax_gz(bin_number, std::vector<double>(bin_number, 0.)), p_ay_gz(bin_number, std::vector<double>(bin_number, 0.));
   for (int i = 0; i < bin_number; i++) {
     for (int j = 0; j < bin_number; j++) {
-      p_ay_ax[i][j] = counter_ay_ax[i][j] / double(ay.size());
+      p_ax_gz[i][j] = counter_ax_gz[i][j] / double(ay.size());
       p_ay_gz[i][j] = counter_ay_gz[i][j] / double(ay.size());
-      p_ax[i] += counter_ay_ax[j][i] / double(ay.size());
-      p_ay_a[i] += counter_ay_ax[i][j] / double(ay.size());
-      p_ay_g[i] += counter_ay_gz[i][j] / double(ay.size());
+      p_ax[i] += counter_ax_gz[j][i] / double(ay.size());
+      p_ay[i] += counter_ax_gz[i][j] / double(ay.size());
       p_gz[i] += counter_ay_gz[j][i] / double(ay.size());
     }
   }
@@ -291,18 +290,18 @@ int main(int argc, char **argv) {
   output.close();
   */
 
-  double me_ay_ax = mutual_entropy(p_ay_ax);
+  double me_ax_gz = mutual_entropy(p_ax_gz);
   double me_ay_gz = mutual_entropy(p_ay_gz);
   double e_ax = entropy(p_ax);
-  double e_ay_a = entropy(p_ay_a);
-  double e_ay_g = entropy(p_ay_g);
+  double e_ay = entropy(p_ay);
   double e_gz = entropy(p_gz);
 
   std::cout << "AX entropy     = " << e_ax << endl;
-  std::cout << "AY entropy     = " << e_ay_a << " = " << e_ay_g << endl;
+  std::cout << "AY entropy     = " << e_ay << endl;
   std::cout << "GZ entropy     = " << e_gz << endl;
-  std::cout << "AY-AX mutual_e = " << me_ay_ax << endl;
+  std::cout << "AX-GZ mutual_e = " << me_ax_gz << endl;
   std::cout << "AY-GZ mutual_e = " << me_ay_gz << endl;
+  std::cout << "Data samples   = " << ax.size() << endl;
 
   return 0;
 }
