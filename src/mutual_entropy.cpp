@@ -79,12 +79,14 @@ double mutual_entropy(std::vector<std::vector<double>> pxy) {
 #define FIXED_BIN           2
 
 void usage(char * progname) {
-  std::cout << "Usage: " << progname << " -bf <bin_fraction> path/to/data/file" << std::endl;
+  std::cout << "Usage: " << progname << " -bf <bin_fraction> -s <index_shift> path/to/data/file" << std::endl;
   std::cout << "       DINAMIC BINNING: <bin_fraction> is a decimal representing the fraction of data in each bin (e.g. 0.05 corresponds to 5%)" << std::endl;
+  std::cout << "       <index_shift> is an integer representing the shift in indices between GZ and AX,AY" << std::endl;
   std::cout << "       path/to/data/file must be a tab-separated value file, compliant with PHYSYCOM inertial standard" << std::endl << std::endl;
 
-  std::cout << "Usage: " << progname << " -bn <bin_number> path/to/data/file" << std::endl;
+  std::cout << "Usage: " << progname << " -bn <bin_number> -s <index_shift> path/to/data/file" << std::endl;
   std::cout << "       FIXED BINNING: <bin_number> is an integer representing the number of bins for each set of data" << std::endl;
+  std::cout << "       <index_shift> is an integer representing the shift in indices between GZ and AX,AY" << std::endl;
   std::cout << "       path/to/data/file must be a tab-separated value file, compliant with PHYSYCOM inertial standard" << std::endl << std::endl;
 
   exit(-3);
@@ -95,20 +97,26 @@ int main(int argc, char **argv) {
 
   std::string input_file;
   double bin_fraction;
-  int bin_number;
+  int bin_number, index_shift=0;
   char mode;
-  if (argc == 4) {
-    if (std::string(argv[1]) == "-bf") {
-      mode = DYNAMIC_BIN;
-      try { bin_fraction = std::stod(std::string(argv[2])); }
-      catch (std::exception &e) { std::cout << "EXCEPTION: " << e.what() << std::endl; usage(argv[0]); }
+  if (argc > 3) {
+    for (int i = 0; i < argc; i++) {
+      if (std::string(argv[i]) == "-bf") {
+        mode = DYNAMIC_BIN;
+        try { bin_fraction = std::stod(std::string(argv[++i])); }
+        catch (std::exception &e) { std::cout << "EXCEPTION: " << e.what() << std::endl; usage(argv[0]); }
+      }
+      if (std::string(argv[i]) == "-bn") {
+        mode = FIXED_BIN;
+        try { bin_number = std::stoi(std::string(argv[++i])); }
+        catch (std::exception &e) { std::cout << "EXCEPTION: " << e.what() << std::endl; usage(argv[0]); }
+      }
+      if (std::string(argv[i]) == "-s") {
+        try { index_shift = std::stoi(std::string(argv[++i])); }
+        catch (std::exception &e) { std::cout << "EXCEPTION: " << e.what() << std::endl; usage(argv[0]); }
+      }
     }
-    else if (std::string(argv[1]) == "-bn") {
-      mode = FIXED_BIN;
-      try { bin_number = std::stoi(std::string(argv[2])); }
-      catch (std::exception &e) { std::cout << "EXCEPTION: " << e.what() << std::endl; usage(argv[0]); }
-    }
-    input_file = argv[3];
+    input_file = argv[argc - 1];
     if (input_file.substr(0, 2) == ".\\") input_file = input_file.substr(2, input_file.size() - 2);
   }
   else {
@@ -119,11 +127,25 @@ int main(int argc, char **argv) {
   // data parsing, convertion, storage
   vector< vector<string> > file_tokens = Read_from_file(input_file);
   vector< vector<double> > data = tokens_to_double(file_tokens);
-  vector<double> ax, ay, gz;
+  vector<double> ax_, ay_, gz_, ax, ay, gz;
   for (auto line : data) {
-    ax.push_back(line[AX_INDEX]);
-    ay.push_back(line[AY_INDEX]);
-    gz.push_back(line[GZ_INDEX]);
+    ax_.push_back(line[AX_INDEX]);
+    ay_.push_back(line[AY_INDEX]);
+    gz_.push_back(line[GZ_INDEX]);
+  }
+
+  // shift, if any
+  if (index_shift > ax_.size() / 2) {
+    std::cout << "ERROR: Index shift too big, upper bound : " << ax_.size() / 2 << std::endl;
+    exit(21);
+  }
+  else {
+    std::cout << "SHIFT MODE: index shift = " << index_shift << std::endl;
+  }
+  for (size_t i = 0; i < ax_.size()-index_shift; i++) {
+      ax.push_back(ax_[i]);
+      ay.push_back(ay_[i]);
+      gz.push_back(gz_[i+index_shift]);
   }
 
   // ranges
@@ -182,15 +204,15 @@ int main(int argc, char **argv) {
       for (size_t j = 0; j < ay_pivot.size(); j++) if (ay[i] <= ay_pivot[j]) { ay_index = j; break; }
       for (size_t j = 0; j < gz_pivot.size(); j++) if (gz[i] <= gz_pivot[j]) { gz_index = j; break; }
 
-//      std::cout << i << "\t" << ax_index << "\t" << ay_index << "\t" << gz_index << "\n";
+      //      std::cout << i << "\t" << ax_index << "\t" << ay_index << "\t" << gz_index << "\n";
       counter_ax_gz[ay_index][ax_index]++;
       counter_ay_gz[ay_index][gz_index]++;
     }
 
-//    int sum = 0;
-//    for (auto c : counter_ay_ax)
-//      for (auto e : c) sum += e;
-//    std::cout << "tot " << ax.size() << "\t" << sum << std::endl;
+    //    int sum = 0;
+    //    for (auto c : counter_ay_ax)
+    //      for (auto e : c) sum += e;
+    //    std::cout << "tot " << ax.size() << "\t" << sum << std::endl;
 
     break;
   }
@@ -233,62 +255,62 @@ int main(int argc, char **argv) {
     }
   }
 
-//  double sum1 = 0, sum2 = 0, diff = 0;
-//  for (size_t i = 0; i < p_ay_a.size(); i++) {
-//    sum1 += p_ay_a[i];
-//    sum2 += p_ay_g[i];
-//    diff += abs(p_ay_a[i] - p_ay_g[i]);
-//  }
-//  std::cout << sum1 << "  " << sum2 << "  " << diff << std::endl;
+  //  double sum1 = 0, sum2 = 0, diff = 0;
+  //  for (size_t i = 0; i < p_ay_a.size(); i++) {
+  //    sum1 += p_ay_a[i];
+  //    sum2 += p_ay_g[i];
+  //    diff += abs(p_ay_a[i] - p_ay_g[i]);
+  //  }
+  //  std::cout << sum1 << "  " << sum2 << "  " << diff << std::endl;
 
 
-  /*
-  string outfile = input_file.substr(0, input_file.size() - 4) + "_count.txt";
-  ofstream output(outfile);
-  for (size_t i = 0; i < counter_ay_gz.size(); i++) {
-    for (size_t j = 0; j < counter_ay_gz[i].size(); j++) {
-      output << counter_ay_gz[i][j] << "\t";
+    /*
+    string outfile = input_file.substr(0, input_file.size() - 4) + "_count.txt";
+    ofstream output(outfile);
+    for (size_t i = 0; i < counter_ay_gz.size(); i++) {
+      for (size_t j = 0; j < counter_ay_gz[i].size(); j++) {
+        output << counter_ay_gz[i][j] << "\t";
+      }
+      output << "\t|\t" << counter_ay[i] << endl;
     }
-    output << "\t|\t" << counter_ay[i] << endl;
-  }
-  output << endl;
-  for (size_t i = 0; i < counter_gz.size(); i++) {
-    output << counter_gz[i] << "\t";
-  }
-  output.close();
-
-  string densityfile = input_file.substr(0, input_file.size() - 4) + "_density.txt";
-  output.open(densityfile);
-  double I = 0;
-  vector<double> p_ay(GRID_STEP, 0), p_gz(GRID_STEP, 0);
-  vector<vector<double>> p_ay_gz(GRID_STEP, vector<double>(GRID_STEP, 0));
-  for (size_t i = 0; i < counter_ay_gz.size(); i++) {
-    p_ay[i] = counter_ay[i] / double(ay.size());
-    for (size_t j = 0; j < counter_ay_gz[i].size(); j++) {
-      p_ay_gz[i][j] = counter_ay_gz[i][j] / double(ay.size());
-      p_gz[j] = counter_gz[j] / double(ay.size());
-
-      output << i*ay_binw + ay_min << "\t" << j*gz_binw + gz_min << "\t" << p_ay_gz[i][j] << endl;
-      I += ((p_ay_gz[i][j] == 0) ? 0 : p_ay_gz[i][j] * log(p_ay_gz[i][j] / (p_ay[i] * p_gz[j])));
-      //cout << i << " " << j << " - " << p_ay_gz[i][j] << "(" << (p_ay_gz[i][j]==0) << ") " << p_ay[i] << " " << p_gz[j] << " " << log(p_ay_gz[i][j] / (p_ay[i] * p_gz[j])) << endl;
+    output << endl;
+    for (size_t i = 0; i < counter_gz.size(); i++) {
+      output << counter_gz[i] << "\t";
     }
-  }
-  output.close();
+    output.close();
 
-  string freqfile = input_file.substr(0, input_file.size() - 4) + "_freq.txt";
-  output.open(freqfile);
-  for (size_t i = 0; i < p_ay_gz.size(); i++) {
-    for (size_t j = 0; j < p_ay_gz[i].size(); j++) {
-      output << p_ay_gz[i][j] << "\t";
+    string densityfile = input_file.substr(0, input_file.size() - 4) + "_density.txt";
+    output.open(densityfile);
+    double I = 0;
+    vector<double> p_ay(GRID_STEP, 0), p_gz(GRID_STEP, 0);
+    vector<vector<double>> p_ay_gz(GRID_STEP, vector<double>(GRID_STEP, 0));
+    for (size_t i = 0; i < counter_ay_gz.size(); i++) {
+      p_ay[i] = counter_ay[i] / double(ay.size());
+      for (size_t j = 0; j < counter_ay_gz[i].size(); j++) {
+        p_ay_gz[i][j] = counter_ay_gz[i][j] / double(ay.size());
+        p_gz[j] = counter_gz[j] / double(ay.size());
+
+        output << i*ay_binw + ay_min << "\t" << j*gz_binw + gz_min << "\t" << p_ay_gz[i][j] << endl;
+        I += ((p_ay_gz[i][j] == 0) ? 0 : p_ay_gz[i][j] * log(p_ay_gz[i][j] / (p_ay[i] * p_gz[j])));
+        //cout << i << " " << j << " - " << p_ay_gz[i][j] << "(" << (p_ay_gz[i][j]==0) << ") " << p_ay[i] << " " << p_gz[j] << " " << log(p_ay_gz[i][j] / (p_ay[i] * p_gz[j])) << endl;
+      }
     }
-    output << "\t|\t" << p_ay[i] << endl;
-  }
-  output << endl;
-  for (size_t i = 0; i < counter_gz.size(); i++) {
-    output << p_gz[i] << "\t";
-  }
-  output.close();
-  */
+    output.close();
+
+    string freqfile = input_file.substr(0, input_file.size() - 4) + "_freq.txt";
+    output.open(freqfile);
+    for (size_t i = 0; i < p_ay_gz.size(); i++) {
+      for (size_t j = 0; j < p_ay_gz[i].size(); j++) {
+        output << p_ay_gz[i][j] << "\t";
+      }
+      output << "\t|\t" << p_ay[i] << endl;
+    }
+    output << endl;
+    for (size_t i = 0; i < counter_gz.size(); i++) {
+      output << p_gz[i] << "\t";
+    }
+    output.close();
+    */
 
   double me_ax_gz = mutual_entropy(p_ax_gz);
   double me_ay_gz = mutual_entropy(p_ay_gz);
