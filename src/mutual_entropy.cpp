@@ -97,7 +97,7 @@ int main(int argc, char **argv) {
 
   std::string input_file;
   double bin_fraction;
-  int bin_number, index_shift=0;
+  int bin_number, index_shift = 0;
   char mode;
   if (argc > 3) {
     for (int i = 0; i < argc; i++) {
@@ -135,17 +135,24 @@ int main(int argc, char **argv) {
   }
 
   // shift, if any
-  if (index_shift > (int) ax_.size() / 2) {
+  if (index_shift > (int)ax_.size() / 2) {
     std::cout << "ERROR: Index shift too big, upper bound : " << ax_.size() / 2 << std::endl;
     exit(21);
   }
   else {
     std::cout << "SHIFT MODE (index shift " << index_shift << " ) " << std::endl;
   }
-  for (size_t i = 0; i < ax_.size()-index_shift; i++) {
+  for (size_t i = 0; i < ax_.size() - abs(index_shift); i++) {
+    if (index_shift >= 0) {
       ax.push_back(ax_[i]);
       ay.push_back(ay_[i]);
-      gz.push_back(gz_[i+index_shift]);
+      gz.push_back(gz_[i + index_shift]);
+    }
+    else {
+      ax.push_back(ax_[i - index_shift]);
+      ay.push_back(ay_[i - index_shift]);
+      gz.push_back(gz_[i]);
+    }
   }
 
   // ranges
