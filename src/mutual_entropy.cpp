@@ -72,8 +72,8 @@ double mutual_entropy(std::vector<std::vector<double>> pxy) {
 
 
 //////// MAIN
-#define MAJOR_VERSION       1
-#define MINOR_VERSION       1
+#define MAJOR_VERSION       2
+#define MINOR_VERSION       0
 
 #define DYNAMIC_BIN         1
 #define FIXED_BIN           2
@@ -135,12 +135,12 @@ int main(int argc, char **argv) {
   }
 
   // shift, if any
-  if (index_shift > ax_.size() / 2) {
+  if (index_shift > (int) ax_.size() / 2) {
     std::cout << "ERROR: Index shift too big, upper bound : " << ax_.size() / 2 << std::endl;
     exit(21);
   }
   else {
-    std::cout << "SHIFT MODE: index shift = " << index_shift << std::endl;
+    std::cout << "SHIFT MODE (index shift " << index_shift << " ) " << std::endl;
   }
   for (size_t i = 0; i < ax_.size()-index_shift; i++) {
       ax.push_back(ax_[i]);
@@ -166,7 +166,7 @@ int main(int argc, char **argv) {
   switch (mode) {
   case DYNAMIC_BIN:
   {
-    std::cout << "MODE: Dynamic binning (bin fraction " << bin_fraction << " : " << int(ax.size()*bin_fraction) << " )" << std::endl;
+    std::cout << "BIN MODE: Dynamic binning (bin fraction " << bin_fraction << " : " << int(ax.size()*bin_fraction) << " )" << std::endl;
 
     // bin construction
     vector<double> ax_sorted(ax), ay_sorted(ay), gz_sorted(gz);
@@ -218,7 +218,7 @@ int main(int argc, char **argv) {
   }
   case FIXED_BIN:
   {
-    std::cout << "MODE: Fixed binning (bin number " << bin_number << " )" << std::endl;
+    std::cout << "BIN MODE: Fixed binning (bin number " << bin_number << " )" << std::endl;
 
     // bin_width calculation and output
     double ax_binw = (ax_max - ax_min) / double(bin_number - 1);

@@ -138,6 +138,8 @@
   <ItemGroup>
     <None Include="..\script\me_dynamic_scan.plt" />
     <None Include="..\script\me_dynamic_scan.sh" />
+    <None Include="..\script\me_shift_scan.plt" />
+    <None Include="..\script\me_shift_scan.sh" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

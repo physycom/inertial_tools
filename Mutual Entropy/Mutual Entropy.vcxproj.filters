@@ -38,5 +38,11 @@
     <None Include="..\script\me_dynamic_scan.sh">
       <Filter>Script</Filter>
     </None>
+    <None Include="..\script\me_shift_scan.plt">
+      <Filter>Script</Filter>
+    </None>
+    <None Include="..\script\me_shift_scan.sh">
+      <Filter>Script</Filter>
+    </None>
   </ItemGroup>
 </Project>
