@@ -31,6 +31,7 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #include <cmath>
 #include <limits>
 #include <algorithm>
+#include <limits>
 
 #include "io_lib.hpp"
 #include "params.h"
@@ -41,8 +42,8 @@ using namespace std;
 
 //////// Math functions
 double entropy(vector<double> p) {
-  double e = 0;
-  for (auto pi : p) if (pi != 0) e += pi*log(pi);
+  double e = 0.;
+  for (auto pi : p) if (pi > numeric_limits<double>::epsilon()) e += pi*log(pi);
   return -e;
 }
 
@@ -50,7 +51,7 @@ double mutual_entropy(std::vector<std::vector<double>> pxy, std::vector<double> 
   double me = 0.;
   for (size_t i = 0; i < pxy.size(); i++) {
     for (size_t j = 0; j < pxy[i].size(); j++) {
-      me += ((pxy[i][j] == 0) ? 0 : pxy[i][j] * log(pxy[i][j] / (px[i] * py[j])));
+      me += ( (pxy[i][j] > numeric_limits<double>::epsilon()) ? pxy[i][j] * log(pxy[i][j] / (px[i] * py[j])) : 0.);
     }
   }
 
@@ -66,8 +67,7 @@ double mutual_entropy(std::vector<std::vector<double>> pxy) {
     }
   }
 
-  double me = mutual_entropy(pxy, px, py);
-  return me;
+  return mutual_entropy(pxy, px, py);
 }
 
 
@@ -257,7 +257,7 @@ int main(int argc, char **argv) {
       p_ax_gz[i][j] = counter_ax_gz[i][j] / double(ay.size());
       p_ay_gz[i][j] = counter_ay_gz[i][j] / double(ay.size());
       p_ax[i] += counter_ax_gz[j][i] / double(ay.size());
-      p_ay[i] += counter_ax_gz[i][j] / double(ay.size());
+      p_ay[i] += counter_ay_gz[i][j] / double(ay.size());
       p_gz[i] += counter_ay_gz[j][i] / double(ay.size());
     }
   }
