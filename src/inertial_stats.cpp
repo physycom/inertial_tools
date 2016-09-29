@@ -19,8 +19,8 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 
 
 #ifdef _MSC_VER
-#define _CRT_SECURE_NO_WARNINGS  // MVS C warnings shut upper
-#define _SCL_SECURE_NO_WARNINGS  // MVS C warnings shut upper
+#define _CRT_SECURE_NO_WARNINGS
+#define _SCL_SECURE_NO_WARNINGS
 #endif
 
 #include <iostream>
@@ -37,11 +37,10 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #include "params.h"
 #include "math_lib.h"
 
-using namespace std;
 
 //////// MAIN
 #define MAJOR_VERSION       0
-#define MINOR_VERSION       0
+#define MINOR_VERSION       1
 
 void usage(char * progname) {
   std::cout << "Usage: " << progname << " path/to/data/file" << std::endl;
@@ -56,6 +55,7 @@ int main(int argc, char **argv) {
   if (argc > 1) {
     input_file = argv[1];
     if (input_file.substr(0, 2) == ".\\") input_file = input_file.substr(2, input_file.size() - 2);
+    if (input_file.substr(0, 2) == "./") input_file = input_file.substr(2, input_file.size() - 2);
   }
   else {
     std::cout << "ERROR: Wrong command line parameters. Read usage and relaunch properly." << std::endl;

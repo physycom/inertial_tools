@@ -205,7 +205,7 @@ int main(int argc, char **argv) {
     counter_ax_gz.resize(bin_number); for (auto &i : counter_ax_gz) i.resize(bin_number, 0);
     counter_ay_gz.resize(bin_number); for (auto &i : counter_ay_gz) i.resize(bin_number, 0);
 
-    int ax_index, ay_index, gz_index;
+    size_t ax_index, ay_index, gz_index;
     for (size_t i = 0; i < ax.size(); i++) {
       for (size_t j = 0; j < ax_pivot.size(); j++) if (ax[i] <= ax_pivot[j]) { ax_index = j; break; }
       for (size_t j = 0; j < ay_pivot.size(); j++) if (ay[i] <= ay_pivot[j]) { ay_index = j; break; }
