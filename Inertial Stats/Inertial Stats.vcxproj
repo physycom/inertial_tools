@@ -136,6 +136,7 @@
     <ClInclude Include="..\src\math_lib.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\script\inertial_analysis_scan.sh" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
