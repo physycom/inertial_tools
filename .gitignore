@@ -40,3 +40,4 @@ packages/*
 *.user
 *.idb
 *.ilk
+*.tmp

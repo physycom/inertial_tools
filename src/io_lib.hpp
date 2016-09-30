@@ -37,7 +37,7 @@ bool Belongs_to_string(char c, string s) {
   return false;
 }
 
-vector< vector<string> > Read_from_file(string file_name, char compress = 'c') {
+vector< vector<string> > Read_from_file(string file_name) {
   string line; vector<string> tokens; vector< vector<string> > file_tokens;
   fstream data_file; data_file.open(file_name.c_str());
   if (!data_file) {
@@ -45,33 +45,34 @@ vector< vector<string> > Read_from_file(string file_name, char compress = 'c') {
     cin.get();
     exit(777);
   }
-//  else { cout << "SUCCESS: file " << file_name << " opened!\n"; }
   while (!data_file.eof()) {
     line.clear();
     tokens.clear();
     getline(data_file, line);
-    trim(line); // remove leading/trailing spaces
     if (line.size() > 0) {
-      if (compress == 'c') split(tokens, line, is_any_of("\t ,;:"), token_compress_on);
-      else split(tokens, line, is_any_of("\t ,;:"));
-      if (Belongs_to_string(tokens[0].at(0), "#!")) continue;
+//      inertial files only have \t separation
+//      split(tokens, line, is_any_of("\t ,;:"));
+      split(tokens, line, is_any_of("\t"));
+      if (tokens[0].at(0) == '#') continue;
       else file_tokens.push_back(tokens);
     }
   }
   return file_tokens;
 }
 
-std::vector< std::vector<double> > tokens_to_double(std::vector< std::vector<std::string> > tokens) {
-  std::vector< std::vector<double> > data;
-  for (size_t i = 0; i < tokens.size(); i++) {
-    std::vector<double> row;
-    for (size_t j = 0; j < tokens[i].size(); j++) {
-      row.push_back(std::stod(tokens[i][j]));
-    }
-    data.push_back(row);
+std::vector< std::vector<double> > tokens_to_double(std::vector< std::vector<std::string> > parsed_file) {
+  std::vector<double> doubled_line;
+  std::vector< std::vector<double> > doubled_file;
+
+  for (auto &i : parsed_file) {
+    doubled_line.clear();
+    doubled_line.resize(i.size());
+    for (size_t j = 0; j < i.size(); j++) doubled_line[j] = atof(i[j].c_str());
+    doubled_file.push_back(doubled_line);
   }
-  return data;
+  return doubled_file;
 }
+
 
 void dump_to_csv(std::vector< std::vector<double> > data, std::string filename) {
   std::ofstream output(filename);
