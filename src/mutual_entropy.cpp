@@ -168,7 +168,7 @@ int main(int argc, char **argv) {
     }
     else {
       if (enable_stdout) cout << "SHIFT MODE (index shift " << index_shift << " ) " << endl;
-      results << index_shift;
+      results << index_shift << "\t";
     }
     for (size_t i = 0; i < ax_.size() - abs(index_shift); i++) {
       if (index_shift >= 0) {
