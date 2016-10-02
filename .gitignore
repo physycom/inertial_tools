@@ -41,3 +41,4 @@ packages/*
 *.idb
 *.ilk
 *.tmp
+*.txt

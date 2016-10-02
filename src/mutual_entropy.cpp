@@ -19,12 +19,12 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 
 
 #ifdef _MSC_VER
-#define _CRT_SECURE_NO_WARNINGS  // MVS C warnings shut upper
-#define _SCL_SECURE_NO_WARNINGS  // MVS C warnings shut upper
+#define _CRT_SECURE_NO_WARNINGS
+#define _SCL_SECURE_NO_WARNINGS
 #endif
 
 #define MAJOR_VERSION       3
-#define MINOR_VERSION       0
+#define MINOR_VERSION       1
 
 
 
@@ -130,7 +130,7 @@ int main(int argc, char **argv) {
             cerr << "Invalid scan shift, reset to 1" << endl;
             scan_shift = 1;
           }
-          for (int k = start_shift; k <= last_shift; k+= scan_shift) index_shifts.push_back(k); 
+          for (int k = start_shift; k <= last_shift; k += scan_shift) index_shifts.push_back(k);
         }
         catch (exception &e) { cout << "EXCEPTION: " << e.what() << endl; usage(argv[0]); }
       }
@@ -153,14 +153,15 @@ int main(int argc, char **argv) {
   vector< vector<double> > data = tokens_to_double(file_tokens);
 
 
-  vector<double> ax_, ay_, gz_, ax, ay, gz;
+  vector<double> ax_, ay_, gz_;
   for (auto line : data) {
     ax_.push_back(line[AX_INDEX]);
     ay_.push_back(line[AY_INDEX]);
     gz_.push_back(line[GZ_INDEX]);
   }
 
-  for (auto index_shift : index_shifts) {
+#pragma omp parallel for ordered
+  for (auto index_shift = index_shifts.front(); index_shift <= index_shifts.back(); index_shift++) {
     // shift, if any
     if (index_shift > (int)ax_.size() / 2) {
       cerr << "ERROR: Index shift too big, upper bound : " << ax_.size() / 2 << endl;
@@ -168,8 +169,8 @@ int main(int argc, char **argv) {
     }
     else {
       if (enable_stdout) cout << "SHIFT MODE (index shift " << index_shift << " ) " << endl;
-      results << index_shift << "\t";
     }
+    vector<double> ax, ay, gz;
     for (size_t i = 0; i < ax_.size() - abs(index_shift); i++) {
       if (index_shift >= 0) {
         ax.push_back(ax_[i]);
@@ -201,8 +202,9 @@ int main(int argc, char **argv) {
     switch (mode) {
     case DYNAMIC_BIN:
     {
-      if (enable_stdout) cout << "BIN MODE: Dynamic binning (bin fraction " << bin_fraction << " : " << int(ax.size()*bin_fraction) << " )" << endl;
-
+      if (enable_stdout) {
+        cout << "BIN MODE: Dynamic binning (bin fraction " << bin_fraction << " : " << int(ax.size()*bin_fraction) << " )" << endl;
+      }
       // bin construction
       vector<double> ax_sorted(ax), ay_sorted(ay), gz_sorted(gz);
       sort(ax_sorted.begin(), ax_sorted.end());
@@ -243,8 +245,9 @@ int main(int argc, char **argv) {
     }
     case FIXED_BIN:
     {
-      if (enable_stdout) cout << "BIN MODE: Fixed binning (bin number " << bin_number << " )" << endl;
-
+      if (enable_stdout) {
+        cout << "BIN MODE: Fixed binning (bin number " << bin_number << " )" << endl;
+      }
       // bin_width calculation and output
       double ax_binw = (ax_max - ax_min) / double(bin_number - 1);
       double ay_binw = (ay_max - ay_min) / double(bin_number - 1);
@@ -290,17 +293,22 @@ int main(int argc, char **argv) {
     double e_ay = entropy(p_ay);
     double e_gz = entropy(p_gz);
 
-    if (enable_stdout) {
-      cout << "AX entropy     = " << e_ax << endl;
-      cout << "AY entropy     = " << e_ay << endl;
-      cout << "GZ entropy     = " << e_gz << endl;
-      cout << "AX-GZ mutual_e = " << me_ax_gz << endl;
-      cout << "AY-GZ mutual_e = " << me_ay_gz << endl;
-      cout << "Data samples   = " << ax.size() << endl;
-    }
+#pragma omp ordered
+    {
+      if (enable_stdout) {
+        cout << "AX entropy     = " << e_ax << endl;
+        cout << "AY entropy     = " << e_ay << endl;
+        cout << "GZ entropy     = " << e_gz << endl;
+        cout << "AX-GZ mutual_e = " << me_ax_gz << endl;
+        cout << "AY-GZ mutual_e = " << me_ay_gz << endl;
+        cout << "Data samples   = " << ax.size() << endl;
+      }
 
-    results << e_ax << "\t" << e_ay << "\t" << e_gz << "\t" << me_ax_gz << "\t" << me_ay_gz << endl;
+      results << index_shift << "\t" << e_ax << "\t" << e_ay << "\t" << e_gz << "\t" << me_ax_gz << "\t" << me_ay_gz << endl;
+    }
   }
+
+  results.close();
   return 0;
 }
 
