@@ -25,6 +25,10 @@ all : foldertree
 all : $(DEPS)
 all : $(EXES)
 
+openmp : OPT += -fopenmp 
+openmp : $(DEPS)
+openmp : $(EXES)
+
 debug : OPT = -O0 -g -std=c++0x 
 debug : $(DEPS)
 debug : $(EXES)
