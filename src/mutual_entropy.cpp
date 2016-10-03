@@ -87,39 +87,43 @@ void usage(char * progname) {
   cout << "       FIXED BINNING: <bin_number> is an integer representing the number of bins for each set of data" << endl;
   cout << "       <index_shift> is an integer representing the shift in indices between GZ and AX,AY" << endl;
   cout << "       path/to/data/file must be a tab-separated value file, compliant with PHYSYCOM inertial standard" << endl << endl;
-
-  exit(-3);
 }
 
 int main(int argc, char **argv) {
-#pragma omp parallel
-  if (omp_get_thread_num() == 0) {
-    cout << "Mutual Entropy Calculator v" << MAJOR_VERSION << "." << MINOR_VERSION << endl;
-    cout << "Running on " << omp_get_num_threads() << " threads" << endl;
-  }
+  cout << "Mutual Entropy Calculator v" << MAJOR_VERSION << "." << MINOR_VERSION << endl;
   string input_file;
   double bin_fraction;
   int bin_number;
   vector<int> index_shifts;
   char mode;
-  bool enable_stdout = false;
   if (argc > 3) {
     for (int i = 0; i < argc; i++) {
       if (string(argv[i]) == "-bf") {
         mode = DYNAMIC_BIN;
         try { bin_fraction = stod(string(argv[++i])); }
-        catch (exception &e) { cout << "EXCEPTION: " << e.what() << endl; usage(argv[0]); }
+        catch (exception &e) {
+          cerr << "EXCEPTION: " << e.what() << endl;
+          usage(argv[0]);
+          exit(-4);
+        }
       }
       if (string(argv[i]) == "-bn") {
         mode = FIXED_BIN;
         try { bin_number = stoi(string(argv[++i])); }
-        catch (exception &e) { cout << "EXCEPTION: " << e.what() << endl; usage(argv[0]); }
+        catch (exception &e) {
+          cerr << "EXCEPTION: " << e.what() << endl;
+          usage(argv[0]);
+          exit(-5);
+        }
       }
       if (string(argv[i]) == "-s") {
         try { index_shifts.push_back(stoi(string(argv[++i]))); }
-        catch (exception &e) { cout << "EXCEPTION: " << e.what() << endl; usage(argv[0]); }
+        catch (exception &e) {
+          cerr << "EXCEPTION: " << e.what() << endl;
+          usage(argv[0]);
+          exit(-6);
+        }
       }
-      if (string(argv[i]) == "-stdout") enable_stdout = true;
       if (string(argv[i]) == "-ss") {
         try {
           int start_shift = stoi(string(argv[++i]));
@@ -136,7 +140,11 @@ int main(int argc, char **argv) {
           }
           for (int k = start_shift; k <= last_shift; k += scan_shift) index_shifts.push_back(k);
         }
-        catch (exception &e) { cout << "EXCEPTION: " << e.what() << endl; usage(argv[0]); }
+        catch (exception &e) {
+          cerr << "EXCEPTION: " << e.what() << endl;
+          usage(argv[0]);
+          exit(-7);
+        }
       }
     }
     input_file = argv[argc - 1];
@@ -145,17 +153,20 @@ int main(int argc, char **argv) {
   else {
     cout << "ERROR: Wrong command line parameters. Read usage and relaunch properly." << endl;
     usage(argv[0]);
+    exit(-3);
   }
 
-  ofstream results("entropy.log");
-  results << "## Shift scan @ $bin_fraction" << endl;
-  results << "# shift # Entropy AX # Entropy AY # Entropy GZ # Mutual AY-AX # AY-GZ #" << endl;
 
 
   // data parsing, convertion, storage
   vector< vector<string> > file_tokens = Read_from_file(input_file);
   vector< vector<double> > data = tokens_to_double(file_tokens);
 
+  vector<double> me_ax_gz(index_shifts.size(), 0.0);
+  vector<double> me_ay_gz(index_shifts.size(), 0.0);
+  vector<double> e_ax(index_shifts.size(), 0.0);
+  vector<double> e_ay(index_shifts.size(), 0.0);
+  vector<double> e_gz(index_shifts.size(), 0.0);
 
   vector<double> ax_, ay_, gz_;
   for (auto line : data) {
@@ -164,26 +175,25 @@ int main(int argc, char **argv) {
     gz_.push_back(line[GZ_INDEX]);
   }
 
-#pragma omp for ordered
-  for (auto index_shift = index_shifts.front(); index_shift <= index_shifts.back(); index_shift++) {
+#pragma omp parallel for
+  for (int n = 0; n < index_shifts.size(); n++) {
     // shift, if any
-    if (index_shift > (int)ax_.size() / 2) {
-      cerr << "ERROR: Index shift too big, upper bound : " << ax_.size() / 2 << endl;
-      exit(21);
+    if (abs(index_shifts[n]) > (int)ax_.size() / 2) {
+      cerr << "ERROR: Index shift " << index_shifts[n] << " is too big, the upper bound is: " << ax_.size() / 2 << endl;
+      continue;
     }
-    else {
-      if (enable_stdout) cout << "SHIFT MODE (index shift " << index_shift << " ) " << endl;
-    }
-    vector<double> ax, ay, gz;
-    for (size_t i = 0; i < ax_.size() - abs(index_shift); i++) {
-      if (index_shift >= 0) {
+    vector<double> ax(ax_.size(), 0.0);
+    vector<double> ay(ax_.size(), 0.0);
+    vector<double> gz(ax_.size(), 0.0);
+    for (size_t i = 0; i < ax_.size() - abs(index_shifts[n]); i++) {
+      if (index_shifts[n] >= 0) {
         ax.push_back(ax_[i]);
         ay.push_back(ay_[i]);
-        gz.push_back(gz_[i + index_shift]);
+        gz.push_back(gz_[i + index_shifts[n]]);
       }
       else {
-        ax.push_back(ax_[i - index_shift]);
-        ay.push_back(ay_[i - index_shift]);
+        ax.push_back(ax_[i - index_shifts[n]]);
+        ay.push_back(ay_[i - index_shifts[n]]);
         gz.push_back(gz_[i]);
       }
     }
@@ -206,9 +216,6 @@ int main(int argc, char **argv) {
     switch (mode) {
     case DYNAMIC_BIN:
     {
-      if (enable_stdout) {
-        cout << "BIN MODE: Dynamic binning (bin fraction " << bin_fraction << " : " << int(ax.size()*bin_fraction) << " )" << endl;
-      }
       // bin construction
       vector<double> ax_sorted(ax), ay_sorted(ay), gz_sorted(gz);
       sort(ax_sorted.begin(), ax_sorted.end());
@@ -217,12 +224,6 @@ int main(int argc, char **argv) {
 
       int record_per_bin = int(ax.size()*bin_fraction);
       bin_number = int(1. / bin_fraction) + 1;
-
-      if (enable_stdout) {
-        cout << "AX range [ " << ax_min << " , " << ax_max << " ]\tbin_num: " << bin_number << endl;
-        cout << "AY range [ " << ay_min << " , " << ay_max << " ]\tbin_num: " << bin_number << endl;
-        cout << "GZ range [ " << gz_min << " , " << gz_max << " ]\tbin_num: " << bin_number << endl;
-      }
 
       vector<double> ax_pivot, ay_pivot, gz_pivot;
       for (int i = 1; i < bin_number; i++) {
@@ -249,19 +250,10 @@ int main(int argc, char **argv) {
     }
     case FIXED_BIN:
     {
-      if (enable_stdout) {
-        cout << "BIN MODE: Fixed binning (bin number " << bin_number << " )" << endl;
-      }
       // bin_width calculation and output
       double ax_binw = (ax_max - ax_min) / double(bin_number - 1);
       double ay_binw = (ay_max - ay_min) / double(bin_number - 1);
       double gz_binw = (gz_max - gz_min) / double(bin_number - 1);
-
-      if (enable_stdout) {
-        cout << "AX range [ " << ax_min << " , " << ax_max << " ]\tbin_w: " << ax_binw << endl;
-        cout << "AY range [ " << ay_min << " , " << ay_max << " ]\tbin_w: " << ay_binw << endl;
-        cout << "GZ range [ " << gz_min << " , " << gz_max << " ]\tbin_w: " << gz_binw << endl;
-      }
 
       // counting frequencies
       counter_ax_gz.resize(bin_number); for (auto &i : counter_ax_gz) i.resize(bin_number, 0);   // improve this by maybe splitting the switch
@@ -278,8 +270,11 @@ int main(int argc, char **argv) {
     }
 
     // probability densities
-    vector<double> p_ax(bin_number, 0), p_ay(bin_number, 0), p_gz(bin_number, 0);
-    vector<vector<double>> p_ax_gz(bin_number, vector<double>(bin_number, 0.)), p_ay_gz(bin_number, vector<double>(bin_number, 0.));
+    vector<double> p_ax(bin_number, 0.0);
+    vector<double> p_ay(bin_number, 0.0);
+    vector<double> p_gz(bin_number, 0.0);
+    vector<vector<double>> p_ax_gz(bin_number, vector<double>(bin_number, 0.));
+    vector<vector<double>> p_ay_gz(bin_number, vector<double>(bin_number, 0.));
     double renorm = 1.0 / double(ay.size());
     for (int i = 0; i < bin_number; i++) {
       for (int j = 0; j < bin_number; j++) {
@@ -291,26 +286,23 @@ int main(int argc, char **argv) {
       }
     }
 
-    double me_ax_gz = mutual_entropy(p_ax_gz);
-    double me_ay_gz = mutual_entropy(p_ay_gz);
-    double e_ax = entropy(p_ax);
-    double e_ay = entropy(p_ay);
-    double e_gz = entropy(p_gz);
+    me_ax_gz[n] = mutual_entropy(p_ax_gz);
+    me_ay_gz[n] = mutual_entropy(p_ay_gz);
+    e_ax[n] = entropy(p_ax);
+    e_ay[n] = entropy(p_ay);
+    e_gz[n] = entropy(p_gz);
 
-#pragma omp ordered
-    {
-      if (enable_stdout) {
-        cout << "AX entropy     = " << e_ax << endl;
-        cout << "AY entropy     = " << e_ay << endl;
-        cout << "GZ entropy     = " << e_gz << endl;
-        cout << "AX-GZ mutual_e = " << me_ax_gz << endl;
-        cout << "AY-GZ mutual_e = " << me_ay_gz << endl;
-        cout << "Data samples   = " << ax.size() << endl;
-      }
-
-      results << index_shift << "\t" << e_ax << "\t" << e_ay << "\t" << e_gz << "\t" << me_ax_gz << "\t" << me_ay_gz << endl;
-    }
   }
+
+  ofstream results("entropy.log");
+  {
+    results << "## Shift scan @ $bin_fraction" << endl;
+    results << "# shift # Entropy AX # Entropy AY # Entropy GZ # Mutual AY-AX # AY-GZ #" << endl;
+  }
+  for (int i = 0; i < index_shifts.size(); i++) {
+    results << index_shifts[i] << "\t" << e_ax[i] << "\t" << e_ay[i] << "\t" << e_gz[i] << "\t" << me_ax_gz[i] << "\t" << me_ay_gz[i] << endl;
+  }
+
 
   results.close();
   return 0;
