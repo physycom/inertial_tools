@@ -24,7 +24,7 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 #define MAJOR_VERSION       3
-#define MINOR_VERSION       1
+#define MINOR_VERSION       2
 
 
 
@@ -42,6 +42,7 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #include <limits>
 #include <algorithm>
 #include <limits>
+#include <omp.h>
 #include "io_lib.hpp"
 
 using namespace std;
@@ -91,8 +92,11 @@ void usage(char * progname) {
 }
 
 int main(int argc, char **argv) {
-  cout << "Mutual Entropy Calculator v" << MAJOR_VERSION << "." << MINOR_VERSION << endl << endl;
-
+#pragma omp parallel
+  if (omp_get_thread_num() == 0) {
+    cout << "Mutual Entropy Calculator v" << MAJOR_VERSION << "." << MINOR_VERSION << endl;
+    cout << "Running on " << omp_get_num_threads() << " threads" << endl;
+  }
   string input_file;
   double bin_fraction;
   int bin_number;
@@ -160,7 +164,7 @@ int main(int argc, char **argv) {
     gz_.push_back(line[GZ_INDEX]);
   }
 
-#pragma omp parallel for ordered
+#pragma omp for ordered
   for (auto index_shift = index_shifts.front(); index_shift <= index_shifts.back(); index_shift++) {
     // shift, if any
     if (index_shift > (int)ax_.size() / 2) {
