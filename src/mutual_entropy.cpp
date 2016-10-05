@@ -331,9 +331,9 @@ set y2label 'Bin Population'
 set ytics nomirror
 set y2tics
 # Plot
-plot FILE_IN u 1:5 w lines ls 21 lc rgb 'blue'  lw 3 t 'ME(a_x , g_z)' axes x1y1,\
-     FILE_IN u 1:6 w lines ls 23 lc rgb 'red'   lw 3 t 'ME(a_y , g_z)' axes x1y1,\
-     FILE_IN u 1:7 w lines ls 24 lc rgb 'green' lw 3 t 'Bin Pop'       axes x1y2
+plot FILE_IN u 1:5 w lines ls 21 t 'ME(a_x , g_z)' axes x1y1,\
+     FILE_IN u 1:6 w lines ls 24 t 'ME(a_y , g_z)' axes x1y1,\
+     FILE_IN u 1:7 w lines ls 23 t 'Bin Pop'       axes x1y2
 )";
   gnuplot.close();
   return 0;
