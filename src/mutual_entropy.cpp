@@ -50,14 +50,14 @@ using namespace std;
 #define GRID_STEP           500
 
 //////// Math functions
-double entropy(vector<double>& p) {
+double entropy(const vector<double>& p) {
   double e = 0.;
   for (auto& pi : p) if (pi > numeric_limits<double>::epsilon()) e += pi*log(pi);
   return -e;
 }
 
 
-double mutual_entropy(vector<vector<double>>& pxy) {
+double mutual_entropy(const vector<vector<double>>& pxy) {
   vector<double> px(pxy.size(), 0.), py(pxy[0].size(), 0.);
   for (size_t i = 0; i < pxy.size(); i++) {
     for (size_t j = 0; j < pxy[i].size(); j++) {
@@ -79,14 +79,14 @@ double mutual_entropy(vector<vector<double>>& pxy) {
 
 
 void usage(char * progname) {
-  cout << "Usage: " << progname << " -bf <bin_fraction> -s <index_shift> path/to/data/file" << endl;
-  cout << "       DINAMIC BINNING: <bin_fraction> is a decimal representing the fraction of data in each bin (e.g. 0.05 corresponds to 5%)" << endl;
-  cout << "       <index_shift> is an integer representing the shift in indices between GZ and AX,AY" << endl;
-  cout << "       path/to/data/file must be a tab-separated value file, compliant with PHYSYCOM inertial standard" << endl << endl;
-  cout << "Usage: " << progname << " -bn <bin_number> -s <index_shift> path/to/data/file" << endl;
-  cout << "       FIXED BINNING: <bin_number> is an integer representing the number of bins for each set of data" << endl;
-  cout << "       <index_shift> is an integer representing the shift in indices between GZ and AX,AY" << endl;
-  cout << "       path/to/data/file must be a tab-separated value file, compliant with PHYSYCOM inertial standard" << endl << endl;
+  cout << "Usage: " << progname << " [BIN_MODE] [SHIFT_MODE] path/to/file" << endl;
+  cout << "       [BIN_MODE] (mandatory)" << endl;
+  cout << "                 -bf <bin_fraction> : DYNAMIC binning, represents the fraction of data in each bin (e.g. 0.05 corresponds to 5%)." << endl;
+  cout << "                 -bn <bin_number>   : FIXED binning, represents the number of bins for each set of data." << endl;
+  cout << "       [SHIFT_MODE] (optional)" << endl;
+  cout << "                 -s <shift>             : SINGLE shift, represents the shift in indices between GZ and AX,AY (negative values allowed, safe)" << endl;
+  cout << "                 -ss <min> <max> <incr> : SCAN shift, safe and non UNIX sed compliant" << endl;
+  cout << "       path/to/data/file must be a PHYSYCOM INERTIAL STANDARD" << endl << endl;
 }
 
 int main(int argc, char **argv) {
@@ -167,7 +167,8 @@ int main(int argc, char **argv) {
   vector<double> e_ax(index_shifts.size(), 0.0);
   vector<double> e_ay(index_shifts.size(), 0.0);
   vector<double> e_gz(index_shifts.size(), 0.0);
-
+  vector<int> bin_pop(index_shifts.size(), 0);
+  
   vector<double> ax_, ay_, gz_;
   for (auto line : data) {
     ax_.push_back(line[AX_INDEX]);
@@ -182,9 +183,10 @@ int main(int argc, char **argv) {
       cerr << "ERROR: Index shift " << index_shifts[n] << " is too big, the upper bound is: " << ax_.size() / 2 << endl;
       continue;
     }
-    vector<double> ax(ax_.size(), 0.0);
-    vector<double> ay(ax_.size(), 0.0);
-    vector<double> gz(ax_.size(), 0.0);
+
+    vector<double> ax;
+    vector<double> ay;
+    vector<double> gz;
     for (size_t i = 0; i < ax_.size() - abs(index_shifts[n]); i++) {
       if (index_shifts[n] >= 0) {
         ax.push_back(ax_[i]);
@@ -213,6 +215,7 @@ int main(int argc, char **argv) {
 
     // binning
     vector<vector<int>> counter_ax_gz, counter_ay_gz;
+    int record_per_bin = 1;
     switch (mode) {
     case DYNAMIC_BIN:
     {
@@ -222,7 +225,7 @@ int main(int argc, char **argv) {
       sort(ay_sorted.begin(), ay_sorted.end());
       sort(gz_sorted.begin(), gz_sorted.end());
 
-      int record_per_bin = int(ax.size()*bin_fraction);
+      record_per_bin = int(ax.size()*bin_fraction);
       bin_number = int(1. / bin_fraction) + 1;
 
       vector<double> ax_pivot, ay_pivot, gz_pivot;
@@ -250,7 +253,9 @@ int main(int argc, char **argv) {
     }
     case FIXED_BIN:
     {
-      // bin_width calculation and output
+      record_per_bin = int(ax.size()) / bin_number;
+
+      // bin_width calculation
       double ax_binw = (ax_max - ax_min) / double(bin_number - 1);
       double ay_binw = (ay_max - ay_min) / double(bin_number - 1);
       double gz_binw = (gz_max - gz_min) / double(bin_number - 1);
@@ -291,16 +296,16 @@ int main(int argc, char **argv) {
     e_ax[n] = entropy(p_ax);
     e_ay[n] = entropy(p_ay);
     e_gz[n] = entropy(p_gz);
+    bin_pop[n] = record_per_bin;
 
-  }
+  } // omp parallel for ends here
 
+  // dumping results
   ofstream results("entropy.log");
-  {
-    results << "## Shift scan @ $bin_fraction" << endl;
-    results << "# shift # Entropy AX # Entropy AY # Entropy GZ # Mutual AY-AX # AY-GZ #" << endl;
-  }
+  results << "## Shift scan @ " << ((mode == DYNAMIC_BIN) ? "bin_fraction : " + to_string(bin_fraction) : "bin_number : " + to_string(bin_number)) << " # Data samples : " << ax_.size() << endl;
+  results << "# shift # Entropy AX # Entropy AY # Entropy GZ # Mutual AX-GZ # Mutual AY-GZ # bin population #" << endl;
   for (int i = 0; i < index_shifts.size(); i++) {
-    results << index_shifts[i] << "\t" << e_ax[i] << "\t" << e_ay[i] << "\t" << e_gz[i] << "\t" << me_ax_gz[i] << "\t" << me_ay_gz[i] << endl;
+    results << index_shifts[i] << "\t" << e_ax[i] << "\t" << e_ay[i] << "\t" << e_gz[i] << "\t" << me_ax_gz[i] << "\t" << me_ay_gz[i] << "\t" << bin_pop[i] << endl;
   }
 
 

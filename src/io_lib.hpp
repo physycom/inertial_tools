@@ -42,7 +42,6 @@ vector< vector<string> > Read_from_file(string file_name) {
   fstream data_file; data_file.open(file_name.c_str());
   if (!data_file) {
     cout << "FAILED: file " << file_name << " could not be opened" << endl << "Press enter to close.";
-    cin.get();
     exit(777);
   }
   while (!data_file.eof()) {
@@ -50,8 +49,6 @@ vector< vector<string> > Read_from_file(string file_name) {
     tokens.clear();
     getline(data_file, line);
     if (line.size() > 0) {
-//      inertial files only have \t separation
-//      split(tokens, line, is_any_of("\t ,;:"));
       split(tokens, line, is_any_of("\t"));
       if (tokens[0].at(0) == '#') continue;
       else file_tokens.push_back(tokens);
@@ -78,7 +75,6 @@ void dump_to_csv(std::vector< std::vector<double> > data, std::string filename) 
   std::ofstream output(filename);
   if (!output) {
     std::cout << "FAILED: file " << filename << " could not be opened" << std::endl << "Press enter to close.";
-    std::cin.get();
     exit(-2);
   }
 
