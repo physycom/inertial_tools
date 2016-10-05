@@ -24,7 +24,7 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 #define MAJOR_VERSION       3
-#define MINOR_VERSION       3
+#define MINOR_VERSION       4
 
 enum bin_mode { DYNAMIC_BIN, FIXED_BIN };
 
@@ -295,14 +295,47 @@ int main(int argc, char **argv) {
   } // omp parallel for ends here
 
   // dumping results
-  ofstream results("entropy.log");
+  std::string results_filename = input_file.substr(0, input_file.size() - 4) + "_entropy.txt";
+  std::string gnuplot_filename = input_file.substr(0, input_file.size() - 4) + "_entropy.plt";
+  std::string plot_filename = input_file.substr(0, input_file.size() - 4) + "_entropy.png";
+  std::string escaped_filename = boost::replace_all_copy(input_file, "_", "\\_");
+
+  ofstream results(results_filename);
   results << "## Shift scan @ " << ((mode == DYNAMIC_BIN) ? "bin_fraction : " + to_string(bin_fraction) : "bin_number : " + to_string(bin_number)) << " # Data samples : " << ax_.size() << endl;
   results << "# shift # Entropy AX # Entropy AY # Entropy GZ # Mutual AX-GZ # Mutual AY-GZ # bin population #" << endl;
   for (int i = 0; i < index_shifts.size(); i++) {
     results << index_shifts[i] << "\t" << e_ax[i] << "\t" << e_ay[i] << "\t" << e_gz[i] << "\t" << me_ax_gz[i] << "\t" << me_ay_gz[i] << "\t" << bin_pop[i] << endl;
   }
-
   results.close();
+
+  ofstream gnuplot(gnuplot_filename);
+  gnuplot << R"(#!/gnuplot
+FILE_IN=')" << results_filename << R"('
+FILE_OUT=')" << plot_filename << R"('
+set terminal pngcairo dashed size 1280,720 enhanced font 'Verdana,10'
+set output FILE_OUT
+# Styles
+linew = 1.2
+set style line  21 lc rgb '#0072bd' lt 7 lw linew  # blue
+set style line  22 lc rgb '#d95319' lt 7 lw linew  # orange
+set style line  23 lc rgb '#77ac30' lt 7 lw linew  # green
+set style line  24 lc rgb '#a2142f' lt 7 lw linew  # red
+set style line 102 lc rgb '#d6d7d9' lt 1 lw 1      # gray
+# Grid
+set grid xtics ytics back ls 102
+# Titles
+set title 'Mutual Entropy: )" << escaped_filename << R"('
+set xlabel 'Index Shift'
+set ylabel 'Entropy'
+set y2label 'Bin Population'
+set ytics nomirror
+set y2tics
+# Plot
+plot FILE_IN u 1:5 w lines ls 21 lc rgb 'blue'  lw 3 t 'ME(a_x , g_z)' axes x1y1,\
+     FILE_IN u 1:6 w lines ls 23 lc rgb 'red'   lw 3 t 'ME(a_y , g_z)' axes x1y1,\
+     FILE_IN u 1:7 w lines ls 24 lc rgb 'green' lw 3 t 'Bin Pop'       axes x1y2
+)";
+  gnuplot.close();
   return 0;
 }
 
