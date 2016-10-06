@@ -24,7 +24,7 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 #define MAJOR_VERSION       3
-#define MINOR_VERSION       4
+#define MINOR_VERSION       5
 
 enum bin_mode { DYNAMIC_BIN, FIXED_BIN };
 
@@ -72,17 +72,17 @@ double mutual_entropy(const vector<vector<double>>& pxy) {
 }
 
 
-//////// MAIN
 void usage(char * progname) {
-  cout << "Usage: " << progname << " [BIN_MODE] [SHIFT_MODE] path/to/file" << endl;
-  cout << "       [BIN_MODE] (mandatory)" << endl;
-  cout << "                 -bf <bin_fraction> : DYNAMIC binning, represents the fraction of data in each bin (e.g. 0.05 corresponds to 5%)." << endl;
-  cout << "                 -bn <bin_number>   : FIXED binning, represents the number of bins for each set of data." << endl;
-  cout << "       [SHIFT_MODE] (optional)" << endl;
-  cout << "                 -s <shift>             : SINGLE shift, represents the shift in indices between GZ and AX,AY (negative values allowed, safe)" << endl;
-  cout << "                 -ss <min> <max> <incr> : SCAN shift, safe and non UNIX sed compliant" << endl;
-  cout << "       path/to/data/file must be a PHYSYCOM INERTIAL STANDARD" << endl << endl;
+  cerr << "Usage: " << progname << " [BIN_MODE] [SHIFT_MODE] path/to/file" << endl;
+  cerr << "       [BIN_MODE] (mandatory)" << endl;
+  cerr << "                 -bf <bin_fraction> : DYNAMIC binning, represents the fraction of data in each bin (e.g. 0.05 corresponds to 5%)." << endl;
+  cerr << "                 -bn <bin_number>   : FIXED binning, represents the number of bins for each set of data." << endl;
+  cerr << "       [SHIFT_MODE] (optional)" << endl;
+  cerr << "                 -s <shift>             : SINGLE shift, represents the shift in indices between GZ and AX,AY (negative values allowed, safe)" << endl;
+  cerr << "                 -ss <min> <max> <incr> : SCAN shift, safe and non UNIX sed compliant" << endl;
+  cerr << "       path/to/data/file must be a PHYSYCOM INERTIAL STANDARD" << endl << endl;
 }
+
 
 int main(int argc, char **argv) {
   cout << "Mutual Entropy Calculator v" << MAJOR_VERSION << "." << MINOR_VERSION << endl;
@@ -146,22 +146,27 @@ int main(int argc, char **argv) {
     if (input_file.substr(0, 2) == ".\\") input_file = input_file.substr(2, input_file.size() - 2);
   }
   else {
-    cout << "ERROR: Wrong command line parameters. Read usage and relaunch properly." << endl;
+    cerr << "ERROR: Wrong command line parameters. Read usage and relaunch properly." << endl;
     usage(argv[0]);
     exit(-3);
   }
 
 
-  // data parsing, convertion, storage
+  // data parsing, conversion, storage
   vector< vector<string> > file_tokens = Read_from_file(input_file);
   vector< vector<double> > data = tokens_to_double(file_tokens);
 
-  vector<double> me_ax_gz(index_shifts.size(), 0.0);
-  vector<double> me_ay_gz(index_shifts.size(), 0.0);
-  vector<double> e_ax(index_shifts.size(), 0.0);
-  vector<double> e_ay(index_shifts.size(), 0.0);
-  vector<double> e_gz(index_shifts.size(), 0.0);
-  vector<int> bin_pop(index_shifts.size(), 0);
+  if (!data.size()) {
+    cerr << "ERROR: Empty file " << input_file << endl;
+    exit(-4);
+  }
+
+  vector<double> me_ax_gz(index_shifts.size(), std::numeric_limits<double>::signaling_NaN());
+  vector<double> me_ay_gz(index_shifts.size(), std::numeric_limits<double>::signaling_NaN());
+  vector<double> e_ax(index_shifts.size(), std::numeric_limits<double>::signaling_NaN());
+  vector<double> e_ay(index_shifts.size(), std::numeric_limits<double>::signaling_NaN());
+  vector<double> e_gz(index_shifts.size(), std::numeric_limits<double>::signaling_NaN());
+  vector<int> bin_pop(index_shifts.size(), std::numeric_limits<int>::signaling_NaN());
   
   vector<double> ax_, ay_, gz_;
   for (auto line : data) {
@@ -172,9 +177,8 @@ int main(int argc, char **argv) {
 
 #pragma omp parallel for
   for (int n = 0; n < index_shifts.size(); n++) {
-    // shift, if any
     if (abs(index_shifts[n]) > (int)ax_.size() / 2) {
-      cerr << "ERROR: Index shift " << index_shifts[n] << " is too big, the upper bound is: " << ax_.size() / 2 << endl;
+      //cout << "Index shift " << index_shifts[n] << " is too big, the upper bound is: " << ax_.size() / 2 << endl;
       continue;
     }
 
@@ -298,13 +302,14 @@ int main(int argc, char **argv) {
   std::string results_filename = input_file.substr(0, input_file.size() - 4) + "_entropy.txt";
   std::string gnuplot_filename = input_file.substr(0, input_file.size() - 4) + "_entropy.plt";
   std::string plot_filename = input_file.substr(0, input_file.size() - 4) + "_entropy.png";
-  std::string escaped_filename = boost::replace_all_copy(input_file, "_", "\\_");
+  std::string escaped_filename = boost::replace_all_copy(results_filename, "_", "\\_");
 
   ofstream results(results_filename);
   results << "## Shift scan @ " << ((mode == DYNAMIC_BIN) ? "bin_fraction : " + to_string(bin_fraction) : "bin_number : " + to_string(bin_number)) << " # Data samples : " << ax_.size() << endl;
   results << "# shift # Entropy AX # Entropy AY # Entropy GZ # Mutual AX-GZ # Mutual AY-GZ # bin population #" << endl;
   for (int i = 0; i < index_shifts.size(); i++) {
-    results << index_shifts[i] << "\t" << e_ax[i] << "\t" << e_ay[i] << "\t" << e_gz[i] << "\t" << me_ax_gz[i] << "\t" << me_ay_gz[i] << "\t" << bin_pop[i] << endl;
+    if (bin_pop[i] == bin_pop[i]) results << index_shifts[i] << "\t" << e_ax[i] << "\t" << e_ay[i] << "\t" << e_gz[i] << "\t" << me_ax_gz[i] << "\t" << me_ay_gz[i] << "\t" << bin_pop[i] << endl;
+    else continue; // skip results still initialized to NaN (meaning they were not calculated in the algoritm)
   }
   results.close();
 

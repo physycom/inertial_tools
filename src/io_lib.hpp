@@ -41,8 +41,8 @@ vector< vector<string> > Read_from_file(string file_name) {
   string line; vector<string> tokens; vector< vector<string> > file_tokens;
   fstream data_file; data_file.open(file_name.c_str());
   if (!data_file) {
-    cout << "FAILED: file " << file_name << " could not be opened" << endl << "Press enter to close.";
-    exit(777);
+    cerr << "FAILED: file " << file_name << " could not be opened" << endl;
+    exit(-1);
   }
   while (!data_file.eof()) {
     line.clear();
@@ -57,9 +57,9 @@ vector< vector<string> > Read_from_file(string file_name) {
   return file_tokens;
 }
 
-std::vector< std::vector<double> > tokens_to_double(std::vector< std::vector<std::string> > parsed_file) {
-  std::vector<double> doubled_line;
-  std::vector< std::vector<double> > doubled_file;
+vector< vector<double> > tokens_to_double(vector< vector<string> > parsed_file) {
+  vector<double> doubled_line;
+  vector< vector<double> > doubled_file;
 
   for (auto &i : parsed_file) {
     doubled_line.clear();
@@ -71,18 +71,18 @@ std::vector< std::vector<double> > tokens_to_double(std::vector< std::vector<std
 }
 
 
-void dump_to_csv(std::vector< std::vector<double> > data, std::string filename) {
-  std::ofstream output(filename);
+void dump_to_csv(vector< vector<double> > data, string filename) {
+  ofstream output(filename);
   if (!output) {
-    std::cout << "FAILED: file " << filename << " could not be opened" << std::endl << "Press enter to close.";
+    cerr << "FAILED: file " << filename << " could not be opened" << endl;
     exit(-2);
   }
 
   for (size_t i = 0; i < data.size(); i++) {
     for (size_t j = 0; j < data[i].size(); j++) {
-      output << std::fixed << std::setprecision(3) << std::setw(7) << data[i][j] << '\t';
+      output << fixed << setprecision(3) << setw(7) << data[i][j] << '\t';
     }
-    output << std::endl;
+    output << endl;
   }
   output.close();
 
