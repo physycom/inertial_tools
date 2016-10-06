@@ -34,12 +34,13 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #include <algorithm>
 #include <limits>
 
+#include "jsoncons/json.hpp"
 #include "io_lib.hpp"
 #include "math_lib.h"
 
 
 #define MAJOR_VERSION       0
-#define MINOR_VERSION       2
+#define MINOR_VERSION       3
 
 void usage(char * progname) {
   std::cerr << "Usage: " << progname << " path/to/data/file" << std::endl;
@@ -117,15 +118,15 @@ int main(int argc, char **argv) {
     ave_gyr.z += gz[i];
 
     quad_acc.xx += ax[i] * ax[i]; quad_acc.xy += ax[i] * ay[i]; quad_acc.xz += ax[i] * az[i];
-    quad_acc.yx += ay[i] * ax[i]; quad_acc.yy += ay[i] * ay[i]; quad_acc.xz += ay[i] * az[i];
+    quad_acc.yx += ay[i] * ax[i]; quad_acc.yy += ay[i] * ay[i]; quad_acc.yz += ay[i] * az[i];
     quad_acc.zx += az[i] * ax[i]; quad_acc.zy += az[i] * ay[i]; quad_acc.zz += az[i] * az[i];
 
     quad_gyr.xx += gx[i] * gx[i]; quad_gyr.xy += gx[i] * gy[i]; quad_gyr.xz += gx[i] * gz[i];
-    quad_gyr.yx += gy[i] * gx[i]; quad_gyr.yy += gy[i] * gy[i]; quad_gyr.xz += gy[i] * gz[i];
+    quad_gyr.yx += gy[i] * gx[i]; quad_gyr.yy += gy[i] * gy[i]; quad_gyr.yz += gy[i] * gz[i];
     quad_gyr.zx += gz[i] * gx[i]; quad_gyr.zy += gz[i] * gy[i]; quad_gyr.zz += gz[i] * gz[i];
 
     quad_mix.xx += ax[i] * gx[i]; quad_mix.xy += ax[i] * gy[i]; quad_mix.xz += ax[i] * gz[i];
-    quad_mix.yx += ay[i] * gx[i]; quad_mix.yy += ay[i] * gy[i]; quad_mix.xz += ay[i] * gz[i];
+    quad_mix.yx += ay[i] * gx[i]; quad_mix.yy += ay[i] * gy[i]; quad_mix.yz += ay[i] * gz[i];
     quad_mix.zx += az[i] * gx[i]; quad_mix.zy += az[i] * gy[i]; quad_mix.zz += az[i] * gz[i];
   }
   multiply_vec3d(1. / math_float(ax.size()), &ave_acc);
@@ -150,35 +151,88 @@ int main(int argc, char **argv) {
   devstd_gyr.z = sqrt(quad_gyr.zz - ave_gyr.z*ave_gyr.z);
 
   cov_acc.xx = quad_acc.xx - ave_acc.x*ave_acc.x; cov_acc.xy = quad_acc.xy - ave_acc.x*ave_acc.y; cov_acc.xz = quad_acc.xz - ave_acc.x*ave_acc.z;
-  cov_acc.xy = quad_acc.xy - ave_acc.x*ave_acc.y; cov_acc.yy = quad_acc.yy - ave_acc.y*ave_acc.y; cov_acc.yz = quad_acc.yz - ave_acc.y*ave_acc.z;
-  cov_acc.xz = quad_acc.xz - ave_acc.x*ave_acc.z; cov_acc.zy = quad_acc.zy - ave_acc.z*ave_acc.y; cov_acc.zz = quad_acc.zz - ave_acc.z*ave_acc.z;
+  cov_acc.yx = quad_acc.yx - ave_acc.y*ave_acc.x; cov_acc.yy = quad_acc.yy - ave_acc.y*ave_acc.y; cov_acc.yz = quad_acc.yz - ave_acc.y*ave_acc.z;
+  cov_acc.zx = quad_acc.zx - ave_acc.z*ave_acc.x; cov_acc.zy = quad_acc.zy - ave_acc.z*ave_acc.y; cov_acc.zz = quad_acc.zz - ave_acc.z*ave_acc.z;
 
   cov_gyr.xx = quad_gyr.xx - ave_gyr.x*ave_gyr.x; cov_gyr.xy = quad_gyr.xy - ave_gyr.x*ave_gyr.y; cov_gyr.xz = quad_gyr.xz - ave_gyr.x*ave_gyr.z;
-  cov_gyr.xy = quad_gyr.xy - ave_gyr.x*ave_gyr.y; cov_gyr.yy = quad_gyr.yy - ave_gyr.y*ave_gyr.y; cov_gyr.yz = quad_gyr.yz - ave_gyr.y*ave_gyr.z;
-  cov_gyr.xz = quad_gyr.xz - ave_gyr.x*ave_gyr.z; cov_gyr.zy = quad_gyr.zy - ave_gyr.z*ave_gyr.y; cov_gyr.zz = quad_gyr.zz - ave_gyr.z*ave_gyr.z;
+  cov_gyr.yx = quad_gyr.yx - ave_gyr.y*ave_gyr.x; cov_gyr.yy = quad_gyr.yy - ave_gyr.y*ave_gyr.y; cov_gyr.yz = quad_gyr.yz - ave_gyr.y*ave_gyr.z;
+  cov_gyr.zx = quad_gyr.zx - ave_gyr.z*ave_gyr.x; cov_gyr.zy = quad_gyr.zy - ave_gyr.z*ave_gyr.y; cov_gyr.zz = quad_gyr.zz - ave_gyr.z*ave_gyr.z;
+
+  cov_mix.xx = quad_mix.xx - ave_acc.x*ave_gyr.x; cov_mix.xy = quad_mix.xy - ave_acc.x*ave_gyr.y; cov_mix.xz = quad_mix.xz - ave_acc.x*ave_gyr.z;
+  cov_mix.yx = quad_mix.yx - ave_acc.y*ave_gyr.x; cov_mix.yy = quad_mix.yy - ave_acc.y*ave_gyr.y; cov_mix.yz = quad_mix.yz - ave_acc.y*ave_gyr.z;
+  cov_mix.zx = quad_mix.zx - ave_acc.z*ave_gyr.x; cov_mix.zy = quad_mix.zy - ave_acc.z*ave_gyr.y; cov_mix.zz = quad_mix.zz - ave_acc.z*ave_gyr.z;
+
+  // Jsonize results
+  jsoncons::json j_ave_acc;
+  j_ave_acc["x"] = ave_acc.x; j_ave_acc["y"] = ave_acc.y; j_ave_acc["z"] = ave_acc.z;
+  jsoncons::json j_dev_acc;
+  j_dev_acc["x"] = devstd_acc.x; j_dev_acc["y"] = devstd_acc.y; j_dev_acc["z"] = devstd_acc.z;
+  jsoncons::json j_quad_acc, j_quad_accx, j_quad_accy, j_quad_accz;
+  j_quad_accx["x"] = quad_acc.xx; j_quad_accx["y"] = quad_acc.xy; j_quad_accx["z"] = quad_acc.xz;
+  j_quad_accy["x"] = quad_acc.yx; j_quad_accy["y"] = quad_acc.yy; j_quad_accy["z"] = quad_acc.yz;
+  j_quad_accz["x"] = quad_acc.zx; j_quad_accz["y"] = quad_acc.zy; j_quad_accz["z"] = quad_acc.zz;
+  j_quad_acc["x"] = j_quad_accx; j_quad_acc["y"] = j_quad_accy; j_quad_acc["z"] = j_quad_accz;
+  jsoncons::json j_cov_acc, j_cov_accx, j_cov_accy, j_cov_accz;
+  j_cov_accx["x"] = cov_acc.xx; j_cov_accx["y"] = cov_acc.xy; j_cov_accx["z"] = cov_acc.xz;
+  j_cov_accy["x"] = cov_acc.yx; j_cov_accy["y"] = cov_acc.yy; j_cov_accy["z"] = cov_acc.yz;
+  j_cov_accz["x"] = cov_acc.zx; j_cov_accz["y"] = cov_acc.zy; j_cov_accz["z"] = cov_acc.zz;
+  j_cov_acc["x"] = j_cov_accx; j_cov_acc["y"] = j_cov_accy; j_cov_acc["z"] = j_cov_accz;
+
+  jsoncons::json j_ave_gyr;
+  j_ave_gyr["x"] = ave_gyr.x; j_ave_gyr["y"] = ave_gyr.y; j_ave_gyr["z"] = ave_gyr.z;
+  jsoncons::json j_dev_gyr;
+  j_dev_gyr["x"] = devstd_gyr.x; j_dev_gyr["y"] = devstd_gyr.y; j_dev_gyr["z"] = devstd_gyr.z;
+  jsoncons::json j_quad_gyr, j_quad_gyrx, j_quad_gyry, j_quad_gyrz;
+  j_quad_gyrx["x"] = quad_gyr.xx; j_quad_gyrx["y"] = quad_gyr.xy; j_quad_gyrx["z"] = quad_gyr.xz;
+  j_quad_gyry["x"] = quad_gyr.yx; j_quad_gyry["y"] = quad_gyr.yy; j_quad_gyry["z"] = quad_gyr.yz;
+  j_quad_gyrz["x"] = quad_gyr.zx; j_quad_gyrz["y"] = quad_gyr.zy; j_quad_gyrz["z"] = quad_gyr.zz;
+  j_quad_gyr["x"] = j_quad_gyrx; j_quad_gyr["y"] = j_quad_gyry; j_quad_gyr["z"] = j_quad_gyrz;
+  jsoncons::json j_cov_gyr, j_cov_gyrx, j_cov_gyry, j_cov_gyrz;
+  j_cov_gyrx["x"] = cov_gyr.xx; j_cov_gyrx["y"] = cov_gyr.xy; j_cov_gyrx["z"] = cov_gyr.xz;
+  j_cov_gyry["x"] = cov_gyr.yx; j_cov_gyry["y"] = cov_gyr.yy; j_cov_gyry["z"] = cov_gyr.yz;
+  j_cov_gyrz["x"] = cov_gyr.zx; j_cov_gyrz["y"] = cov_gyr.zy; j_cov_gyrz["z"] = cov_gyr.zz;
+  j_cov_gyr["x"] = j_cov_gyrx; j_cov_gyr["y"] = j_cov_gyry; j_cov_gyr["z"] = j_cov_gyrz;
+
+  jsoncons::json j_quad_mix, j_quad_mixx, j_quad_mixy, j_quad_mixz;
+  j_quad_mixx["x"] = quad_mix.xx; j_quad_mixx["y"] = quad_mix.xy; j_quad_mixx["z"] = quad_mix.xz;
+  j_quad_mixy["x"] = quad_mix.yx; j_quad_mixy["y"] = quad_mix.yy; j_quad_mixy["z"] = quad_mix.yz;
+  j_quad_mixz["x"] = quad_mix.zx; j_quad_mixz["y"] = quad_mix.zy; j_quad_mixz["z"] = quad_mix.zz;
+  j_quad_mix["x"] = j_quad_mixx; j_quad_mix["y"] = j_quad_mixy; j_quad_mix["z"] = j_quad_mixz;
+  jsoncons::json j_cov_mix, j_cov_mixx, j_cov_mixy, j_cov_mixz;
+  j_cov_mixx["x"] = cov_mix.xx; j_cov_mixx["y"] = cov_mix.xy; j_cov_mixx["z"] = cov_mix.xz;
+  j_cov_mixy["x"] = cov_mix.yx; j_cov_mixy["y"] = cov_mix.yy; j_cov_mixy["z"] = cov_mix.yz;
+  j_cov_mixz["x"] = cov_mix.zx; j_cov_mixz["y"] = cov_mix.zy; j_cov_mixz["z"] = cov_mix.zz;
+  j_cov_mix["x"] = j_cov_mixx; j_cov_mix["y"] = j_cov_mixy; j_cov_mix["z"] = j_cov_mixz;
+
+  jsoncons::json jresults;
+  jresults["data_samples"] = ax.size();
+  jresults["acc_ave_g"] = j_ave_acc;
+  jresults["acc_devstd_g"] = j_dev_acc;
+  jresults["acc_quad_g^2"] = j_quad_acc;
+  jresults["acc_cov_g^2"] = j_cov_acc;
+  jresults["gyr_ave_g"] = j_ave_gyr;
+  jresults["gyr_devstd_g"] = j_dev_gyr;
+  jresults["gyr_quad_g^2"] = j_quad_gyr;
+  jresults["gyr_cov_g^2"] = j_cov_gyr;
+  jresults["mix_quad_g^2"] = j_quad_mix;
+  jresults["mix_cov_g^2"] = j_cov_mix;
 
   // Output
-  std::string out_filename = input_file.substr(0, input_file.size() - 4) + "_stats.txt";
-  std::ofstream data_out(out_filename);
-  data_out << "INERTIAL DATA size : " << ax.size() << std::endl;
-  data_out << "ACC averages       : " << ave_acc.x << "  " << ave_acc.y << "  " << ave_acc.z << std::endl;
-  data_out << "ACC std_dev        : " << devstd_acc.x << "  " << devstd_acc.y << "  " << devstd_acc.z << std::endl;
-  data_out << "ACC estimators     : " << devstd_acc.x / fabs(ave_acc.x) << "  " << devstd_acc.y / fabs(ave_acc.y) << "  " << devstd_acc.z / fabs(ave_acc.z) << std::endl;
-  data_out << "GYR averages       : " << ave_gyr.x << "  " << ave_gyr.y << "  " << ave_gyr.z << std::endl;
-  data_out << "GYR std_dev        : " << devstd_gyr.x << "  " << devstd_gyr.y << "  " << devstd_gyr.z << std::endl;
-  data_out << "GYR estimators     : " << devstd_gyr.x / fabs(ave_gyr.x) << "  " << devstd_gyr.y / fabs(ave_gyr.y) << "  " << devstd_gyr.z / fabs(ave_gyr.z) << std::endl;
-  data_out.close();
-
-  // Gnuplot script
-  std::string gnuplot_filename = input_file.substr(0, input_file.size() - 4) + ".plt";
-  std::string plot_filename = input_file.substr(0, input_file.size() - 4) + ".png";
+  std::string results_filename = input_file.substr(0, input_file.size() - 4) + "_stats.json";
+  std::string gnuplot_filename = input_file.substr(0, input_file.size() - 4) + "_stats.plt";
+  std::string plot_filename = input_file.substr(0, input_file.size() - 4) + "_stats.png";
   std::string escaped_filename = boost::replace_all_copy(input_file, "_", "\\_");
+
+  std::ofstream results(results_filename);
+  results << jsoncons::pretty_print(jresults) << std::endl;
+  results.close();
 
   std::ofstream plot(gnuplot_filename);
   plot << R"(reset
 set terminal pngcairo dashed size 1500, 700 enhanced font 'Verdana,10'
 set output ")" << plot_filename << R"("
 set multiplot layout 3, 2 title 'Inertial Data Noise Test : )" << escaped_filename << R"(' font ",14"
+set key opaque
 # Styles
 linew = 1.2
 set style line  21 lc rgb '#0072bd' lt 7 lw linew  # blue
@@ -198,24 +252,30 @@ set y2tics scale 0 format " "
 set grid x2tics y2tics back ls 102
 # Plot
 input = ")" << input_file << R"("
+# acc_x
 set xlabel 't (s)'
 set ylabel 'a_x (g)'
-plot input using 10:3 every 15 notitle with lines ls 21
+plot input using 10:3 every 15 title '{/Symbol s}_{a_x} = )" << fixed << setprecision(3) << devstd_acc.x << R"( (g)' with lines ls 21
+# gyr_x
 set xlabel 't (s)'
 set ylabel '{/Symbol w}_x (dps)'
-plot input using 10 : 6 every 15 notitle with lines ls 21
+plot input using 10:6 every 15 title '{/Symbol s}_{{/Symbol w}_x} = )" << fixed << setprecision(2) << devstd_gyr.x << R"( (dps)' with lines ls 21
+# acc_y
 set xlabel 't (s)'
 set ylabel 'a_y (g)'
-plot input using 10 : 4 every 15 notitle with lines ls 22
+plot input using 10:4 every 15 title '{/Symbol s}_{a_y} = )" << fixed << setprecision(3) << devstd_acc.y << R"( (g)' with lines ls 22
+# gyr_y
 set xlabel 't (s)'
 set ylabel '{/Symbol w}_y (dps)'
-plot input using 10 : 7 every 15 notitle with lines ls 22
+plot input using 10:7 every 15 title '{/Symbol s}_{{/Symbol w}_y} = )" << fixed << setprecision(2) << devstd_gyr.y << R"( (dps)' with lines ls 22
+# acc_z
 set xlabel 't (s)'
 set ylabel 'a_z (g)'
-plot input using 10 : 5 every 15 notitle with lines ls 23
+plot input using 10:5 every 15 title '{/Symbol s}_{a_z} = )" << fixed << setprecision(3) << devstd_acc.z << R"( (g)' with lines ls 23
+# gyr_z
 set xlabel 't (s)'
 set ylabel '{/Symbol w}_z (dps)'
-plot input using 10 : 8 every 15 notitle with lines ls 23
+plot input using 10:8 every 15 title '{/Symbol s}_{{/Symbol w}_z} = )" << fixed << setprecision(2) << devstd_gyr.z << R"( (dps)' with lines ls 23
 unset multiplot
 )" << std::endl;
   plot.close();

@@ -133,10 +133,28 @@
     <ClCompile Include="..\src\math_lib.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\jsoncons\json.hpp" />
+    <ClInclude Include="..\src\jsoncons\jsoncons.hpp" />
+    <ClInclude Include="..\src\jsoncons\jsoncons_config.hpp" />
+    <ClInclude Include="..\src\jsoncons\jsoncons_io.hpp" />
+    <ClInclude Include="..\src\jsoncons\json_deserializer.hpp" />
+    <ClInclude Include="..\src\jsoncons\json_error_category.hpp" />
+    <ClInclude Include="..\src\jsoncons\json_filter.hpp" />
+    <ClInclude Include="..\src\jsoncons\json_input_handler.hpp" />
+    <ClInclude Include="..\src\jsoncons\json_output_handler.hpp" />
+    <ClInclude Include="..\src\jsoncons\json_parser.hpp" />
+    <ClInclude Include="..\src\jsoncons\json_reader.hpp" />
+    <ClInclude Include="..\src\jsoncons\json_serializer.hpp" />
+    <ClInclude Include="..\src\jsoncons\json_structures.hpp" />
+    <ClInclude Include="..\src\jsoncons\json_type_traits.hpp" />
+    <ClInclude Include="..\src\jsoncons\output_format.hpp" />
+    <ClInclude Include="..\src\jsoncons\ovectorstream.hpp" />
+    <ClInclude Include="..\src\jsoncons\parse_error_handler.hpp" />
     <ClInclude Include="..\src\math_lib.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\script\inertial_analysis_scan.sh" />
+    <None Include="..\src\jsoncons\json_parser.hpp.orig" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
