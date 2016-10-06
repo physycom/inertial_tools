@@ -23,6 +23,7 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #define _SCL_SECURE_NO_WARNINGS
 #endif
 
+#include "params.h"
 #include <iostream>
 #include <iomanip>
 #include <complex>
@@ -34,21 +35,18 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #include <limits>
 
 #include "io_lib.hpp"
-#include "params.h"
 #include "math_lib.h"
 
 
-//////// MAIN
 #define MAJOR_VERSION       0
-#define MINOR_VERSION       1
+#define MINOR_VERSION       2
 
 void usage(char * progname) {
-  std::cout << "Usage: " << progname << " path/to/data/file" << std::endl;
-  exit(-3);
+  std::cerr << "Usage: " << progname << " path/to/data/file" << std::endl;
 }
 
 int main(int argc, char **argv) {
-  std::cout << "Inertial Statistics v" << MAJOR_VERSION << "." << MINOR_VERSION << std::endl << std::endl;
+  std::cout << "inertial_stats v" << MAJOR_VERSION << "." << MINOR_VERSION << std::endl << std::endl;
 
   // Command line parsing
   std::string input_file;
@@ -58,8 +56,9 @@ int main(int argc, char **argv) {
     if (input_file.substr(0, 2) == "./") input_file = input_file.substr(2, input_file.size() - 2);
   }
   else {
-    std::cout << "ERROR: Wrong command line parameters. Read usage and relaunch properly." << std::endl;
+    std::cerr << "ERROR: Wrong command line parameters. Read usage and relaunch properly." << std::endl;
     usage(argv[0]);
+    exit(-1);
   }
 
   // Data parsing, convertion, storage
@@ -159,13 +158,16 @@ int main(int argc, char **argv) {
   cov_gyr.xz = quad_gyr.xz - ave_gyr.x*ave_gyr.z; cov_gyr.zy = quad_gyr.zy - ave_gyr.z*ave_gyr.y; cov_gyr.zz = quad_gyr.zz - ave_gyr.z*ave_gyr.z;
 
   // Output
-  std::cout << "INERTIAL DATA size : " << ax.size() << std::endl;
-  std::cout << "ACC averages       : " << ave_acc.x << "  " << ave_acc.y << "  " << ave_acc.z << std::endl;
-  std::cout << "ACC std_dev        : " << devstd_acc.x << "  " << devstd_acc.y << "  " << devstd_acc.z << std::endl;
-//  std::cout << "ACC estimators     : " << devstd_acc.x/abs(ave_acc.x) << "  " << devstd_acc.y / abs(ave_acc.y) << "  " << devstd_acc.z / abs(ave_acc.z) << std::endl;
-  std::cout << "GYR averages       : " << ave_gyr.x << "  " << ave_gyr.y << "  " << ave_gyr.z << std::endl;
-  std::cout << "GYR std_dev        : " << devstd_gyr.x << "  " << devstd_gyr.y << "  " << devstd_gyr.z << std::endl;
-//  std::cout << "GYR estimators     : " << devstd_gyr.x / abs(ave_gyr.x) << "  " << devstd_gyr.y / abs(ave_gyr.y) << "  " << devstd_gyr.z / abs(ave_gyr.z) << std::endl;
+  std::string out_filename = input_file.substr(0, input_file.size() - 4) + "_stats.txt";
+  std::ofstream data_out(out_filename);
+  data_out << "INERTIAL DATA size : " << ax.size() << std::endl;
+  data_out << "ACC averages       : " << ave_acc.x << "  " << ave_acc.y << "  " << ave_acc.z << std::endl;
+  data_out << "ACC std_dev        : " << devstd_acc.x << "  " << devstd_acc.y << "  " << devstd_acc.z << std::endl;
+  data_out << "ACC estimators     : " << devstd_acc.x / fabs(ave_acc.x) << "  " << devstd_acc.y / fabs(ave_acc.y) << "  " << devstd_acc.z / fabs(ave_acc.z) << std::endl;
+  data_out << "GYR averages       : " << ave_gyr.x << "  " << ave_gyr.y << "  " << ave_gyr.z << std::endl;
+  data_out << "GYR std_dev        : " << devstd_gyr.x << "  " << devstd_gyr.y << "  " << devstd_gyr.z << std::endl;
+  data_out << "GYR estimators     : " << devstd_gyr.x / fabs(ave_gyr.x) << "  " << devstd_gyr.y / fabs(ave_gyr.y) << "  " << devstd_gyr.z / fabs(ave_gyr.z) << std::endl;
+  data_out.close();
 
   // Gnuplot script
   std::string gnuplot_filename = input_file.substr(0, input_file.size() - 4) + ".plt";
