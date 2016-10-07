@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
     exit(-1);
   }
 
-  // Data parsing, convertion, storage
+  // Data parsing, conversion, storage
   vector< vector<string> > file_tokens = Read_from_file(input_file);
   vector< vector<double> > data = tokens_to_double(file_tokens);
   vector<double> ax, ay, az, gx, gy, gz;

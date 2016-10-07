@@ -44,8 +44,6 @@ void usage(char * progname) {
   std::cout << "       path/to/data/file must be a tab-separated value file" << std::endl;
   std::cout << "       column_index is an int indicating the column to filter, starting from 0" << std::endl;
   std::cout << "       min_value (max_value) represents the min (max) value which passes the filtering, use \"unset\" for both to unset" << std::endl;
-
-  exit(-3);
 }
 
 int main(int argc, char **argv) {
@@ -92,6 +90,7 @@ int main(int argc, char **argv) {
   else {
     std::cout << "ERROR: Wrong command line parameters. Read usage and relaunch properly." << std::endl;
     usage(argv[0]);
+    exit(-3);
   }
 
   std::cout << "Filtering file : " << input_file << "\tColumn : " << col_index 
