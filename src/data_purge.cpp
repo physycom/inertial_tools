@@ -34,7 +34,7 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 
 using namespace std;
 
-#define MAJOR_VERSION       2
+#define MAJOR_VERSION       3
 #define MINOR_VERSION       0
 
 
@@ -45,15 +45,28 @@ public:
   size_t left, right;
   std::vector<double> params;
 
-  Filter(int filter_size, size_t data_size, const std::vector<double>& _params) {
-    first = (filter_size % 2) ? (filter_size / 2) : (filter_size / 2 - 1);
-    last = data_size - filter_size / 2 - 1;
-    left = (filter_size % 2) ? (filter_size / 2) : (filter_size / 2 - 1);
-    right = filter_size / 2;
+  Filter(const size_t& data_size, const std::string& filter_path) {
+    std::vector<double> coeff;
+    std::ifstream filter_file(filter_path);
+    if (!filter_file) {
+      cerr << "ERROR: file " << filter_path << " could not be opened" << endl;
+      exit(1);
+    }
+    while (!filter_file.eof()) {
+      double temp;
+      filter_file >> temp;
+      coeff.push_back(temp);
+    }
+    filter_file.close();
 
     double normalization = 0.0;
-    for (auto p : _params) normalization += p;
-    for (auto p : _params) params.push_back(p / normalization);
+    for (auto p : coeff) normalization += p;
+    for (auto p : coeff) params.push_back(p / normalization);
+
+    first = (params.size() % 2) ? (params.size() / 2) : (params.size() / 2 - 1);
+    last = data_size - params.size() / 2 - 1;
+    left = (params.size() % 2) ? (params.size() / 2) : (params.size() / 2 - 1);
+    right = params.size() / 2;
   };
 };
 
@@ -65,23 +78,23 @@ std::ostream& operator<<(std::ostream &ost, const Filter &f) {
 
 //////// MAIN
 void usage(char * progname) {
-  std::cout << "Usage: " << progname << " -ma <Nsample> [-subtract] path/to/data/file" << std::endl;
-  std::cout << "       <Nsample> the number of samples onto which apply the Moving Average filter" << std::endl;
+  std::vector<std::string> tokens;
+  boost::split(tokens, std::string(progname), boost::is_any_of("/\\"));
+  std::cout << "Usage: " << tokens.back() << " -filter path/to/filter [-subtract] path/to/data/file" << std::endl;
+  std::cout << "       -filter create a filter from file" << std::endl;
   std::cout << "       -subtract remove the average value of each column from the data [optional]" << std::endl;
   std::cout << "       path/to/data/file must be a tab separated value file with timestamps in the first column" << std::endl;
-
-  exit(-3);
 }
 
 int main(int argc, char **argv) {
   std::cout << "Data Purge v" << MAJOR_VERSION << "." << MINOR_VERSION << std::endl << std::endl;
 
-  std::string input_file;
-  int ma_sample = 0;
+  std::string input_file, filter_file;
+  int ma_sample = 10;
   bool subtract_ave = false;
-  if (argc > 3) {
+  if (argc == 4 || argc == 5) {
     for (int i = 1; i < argc; i++) {
-      if (std::string(argv[i]) == "-ma") ma_sample = std::stoi(std::string(argv[++i]));
+      if (std::string(argv[i]) == "-filter") filter_file = argv[++i];
       else if (std::string(argv[i]) == "-subtract") subtract_ave = true;
       else input_file = argv[i];
     }
@@ -89,9 +102,13 @@ int main(int argc, char **argv) {
   else {
     std::cout << "ERROR: Wrong command line parameters. Read usage and relaunch properly." << std::endl;
     usage(argv[0]);
+    exit(-1);
   }
-  if (input_file.substr(0, 2) == ".\\") input_file = input_file.substr(2, input_file.size() - 2);
-  std::cout << "Purging : \"" << input_file << "\"\tmoving average : " << ma_sample << "\tsubtracting average : " << (subtract_ave ? "ON" : "OFF") << std::endl;
+
+  if (input_file.substr(0, 2) == ".\\" || input_file.substr(0, 2) == "./") input_file = input_file.substr(2, input_file.size() - 2);
+  std::cout << "Purging        : " << input_file << std::endl;
+  std::cout << "Filter         : " << filter_file << std::endl;
+  std::cout << "Remove average : " << (subtract_ave ? "ON" : "OFF") << std::endl;
 
   // Parse text file and convert it to vector of double
   vector< vector<string> > file_tokens;
@@ -103,8 +120,10 @@ int main(int argc, char **argv) {
       row.push_back(std::stod(file_tokens[i][j]));
     }
     data.push_back(row);
-
   }
+
+  // Create filter object from file
+  Filter f(data.size(), filter_file);
 
   // Remove global offset
   if (subtract_ave) {
@@ -128,9 +147,6 @@ int main(int argc, char **argv) {
   }
 
   // Filtering
-  std::vector<double> filter(ma_sample, 1.0);
-  for (auto f : filter) std::cout << f << " "; std::cout << std::endl;
-  Filter f(ma_sample, data.size(), filter);
   for (auto p : f.params) std::cout << p << " "; std::cout << std::endl;
 
   vector< vector<double> > data_purged;
@@ -161,7 +177,7 @@ int main(int argc, char **argv) {
     output << std::endl;
   }
   output.close();
-  std::cout << "Purge result dumped to : \"" << out_file << "\"" << std::endl;
+  std::cout << "Purge result in : " << out_file << std::endl;
 
   return 0;
 }

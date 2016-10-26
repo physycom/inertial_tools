@@ -39,9 +39,9 @@ bool Belongs_to_string(char c, string s) {
 
 vector< vector<string> > Read_from_file(string file_name) {
   string line; vector<string> tokens; vector< vector<string> > file_tokens;
-  fstream data_file; data_file.open(file_name.c_str());
+  ifstream data_file(file_name);
   if (!data_file) {
-    cerr << "FAILED: file " << file_name << " could not be opened" << endl;
+    cerr << "ERROR: file " << file_name << " could not be opened" << endl;
     exit(-1);
   }
   while (!data_file.eof()) {
