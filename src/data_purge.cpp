@@ -37,6 +37,33 @@ using namespace std;
 #define MAJOR_VERSION       2
 #define MINOR_VERSION       0
 
+
+//////// Filter object
+class Filter {
+public:
+  size_t first, last;
+  size_t left, right;
+  std::vector<double> params;
+
+  Filter(int filter_size, size_t data_size, const std::vector<double>& _params) {
+    first = (filter_size % 2) ? (filter_size / 2) : (filter_size / 2 - 1);
+    last = data_size - filter_size / 2 - 1;
+    left = (filter_size % 2) ? (filter_size / 2) : (filter_size / 2 - 1);
+    right = filter_size / 2;
+
+    double normalization = 0.0;
+    for (auto p : _params) normalization += p;
+    for (auto p : _params) params.push_back(p / normalization);
+  };
+};
+
+std::ostream& operator<<(std::ostream &ost, const Filter &f) {
+  ost << "first = " << f.first << "  last = " << f.last << "  size = " << f.params.size() << "  left = " << f.left << "  right = " << f.right;
+  return ost;
+}
+
+
+//////// MAIN
 void usage(char * progname) {
   std::cout << "Usage: " << progname << " -ma <Nsample> [-subtract] path/to/data/file" << std::endl;
   std::cout << "       <Nsample> the number of samples onto which apply the Moving Average filter" << std::endl;
@@ -50,7 +77,7 @@ int main(int argc, char **argv) {
   std::cout << "Data Purge v" << MAJOR_VERSION << "." << MINOR_VERSION << std::endl << std::endl;
 
   std::string input_file;
-  int ma_sample = 0;                // moving average window width
+  int ma_sample = 0;
   bool subtract_ave = false;
   if (argc > 3) {
     for (int i = 1; i < argc; i++) {
@@ -100,37 +127,36 @@ int main(int argc, char **argv) {
     }
   }
 
-  // Moving average
-  size_t first, last, left, right;
-  first = (ma_sample % 2) ? (ma_sample / 2) : (ma_sample / 2 - 1);
-  last = data.size() - ma_sample / 2 - 1;
-  left = (ma_sample % 2) ? (ma_sample / 2) : (ma_sample / 2 - 1);
-  right = ma_sample / 2;
+  // Filtering
+  std::vector<double> filter(ma_sample, 1.0);
+  for (auto f : filter) std::cout << f << " "; std::cout << std::endl;
+  Filter f(ma_sample, data.size(), filter);
+  for (auto p : f.params) std::cout << p << " "; std::cout << std::endl;
 
-  vector< vector<double> > data_ma;
-  for (size_t i = first; i <= last; i++) {
-    vector<double> row_ma;
-    row_ma.push_back(data[i][0]);
+  vector< vector<double> > data_purged;
+  for (size_t i = f.first; i <= f.last; i++) {
+    vector<double> row_purged;
+    row_purged.push_back(data[i][0]);                   // pushback timestamp without modification
     for (size_t j = 1; j < data[0].size(); j++) {
-      double value_ma = 0.0;
-      for (size_t k = i-left; k < i+right; k++) {
-        value_ma += data[k][j];
+      double value_purged = 0.0;
+      for (size_t k = i - f.left; k < i + f.right; k++) {
+        value_purged += data[k][j] * f.params[k - i + f.left];       // params[...] the index is calculated to keep it in range
       }
-      value_ma /= (double)ma_sample;
-      row_ma.push_back(value_ma);
+      row_purged.push_back(value_purged);
     }
-    data_ma.push_back(row_ma);
+    data_purged.push_back(row_purged);
   }
-  std::cout << "Data raw : " << data.size() << " " << data[0].size() << std::endl;
-  std::cout << "Data ma  : " << data_ma.size() << " " << data_ma[0].size() << std::endl;
+  std::cout << "Data original : r " << data.size() << " c " << data[0].size() << std::endl;
+  std::cout << "Data purged   : r " << data_purged.size() << " c " << data_purged[0].size() << std::endl;
 
 
   // Dump to file
-  std::string out_file = input_file.substr(0, input_file.size() - 4) + "_purged_ma" + std::to_string(ma_sample) + (subtract_ave ? "_sub" : "") + ".txt";
+  std::string out_file = input_file.substr(0, input_file.size() - 4) + "_purged" + (subtract_ave ? "_sub" : "") + ".txt";
   std::ofstream output(out_file);
-  for (size_t i = 0; i < data_ma.size(); i++) {
-    for (size_t j = 0; j < data_ma[i].size(); j++) {
-      output << std::fixed << std::setprecision(3) << std::setw(7) << data_ma[i][j] << "    ";
+  output << "# " << f << std::endl;
+  for (size_t i = 0; i < data_purged.size(); i++) {
+    for (size_t j = 0; j < data_purged[i].size(); j++) {
+      output << std::fixed << std::setprecision(6) << data_purged[i][j] << "\t";
     }
     output << std::endl;
   }
