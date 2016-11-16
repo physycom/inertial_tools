@@ -41,7 +41,9 @@ using namespace std;
 #define MINOR_VERSION       0
 
 void usage(char * progname) {
-  std::cout << "Usage: " << progname << " path/to/data/file [-i v0] [-conv acc_factor]" << std::endl;
+  std::vector<std::string> tokens;
+  boost::split(tokens, progname, boost::is_any_of("/\\"));
+  std::cout << "Usage: " << tokens.back() << " path/to/data/file [-i v0] [-conv acc_factor]" << std::endl;
   std::cout << "       path/to/data/file must be a tab-separated value file, compliant with PHYSYCOM inertial standard" << std::endl;
   std::cout << "       v0 is the initial velocity value, if unset the first gps value will be used" << std::endl;
   std::cout << "       acc_factor is the conversion factor for acceleration values, if unset 9.81 will be used" << std::endl;

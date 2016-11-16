@@ -73,7 +73,9 @@ double mutual_entropy(const vector<vector<double>>& pxy) {
 
 
 void usage(char * progname) {
-  cerr << "Usage: " << progname << " [BIN_MODE] [SHIFT_MODE] path/to/file" << endl;
+  std::vector<std::string> tokens;
+  boost::split(tokens, progname, boost::is_any_of("/\\"));
+  cerr << "Usage: " << tokens.back() << " [BIN_MODE] [SHIFT_MODE] path/to/file" << endl;
   cerr << "       [BIN_MODE] (mandatory)" << endl;
   cerr << "                 -bf <bin_fraction> : DYNAMIC binning, represents the fraction of data in each bin (e.g. 0.05 corresponds to 5%)." << endl;
   cerr << "                 -bn <bin_number>   : FIXED binning, represents the number of bins for each set of data." << endl;

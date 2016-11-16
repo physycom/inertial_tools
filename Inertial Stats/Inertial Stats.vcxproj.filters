@@ -85,10 +85,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="..\script\inertial_analysis_scan.sh">
       <Filter>Tools</Filter>
     </None>
     <None Include="..\src\jsoncons\json_parser.hpp.orig" />
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

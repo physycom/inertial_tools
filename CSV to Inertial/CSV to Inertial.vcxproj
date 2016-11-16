@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{43FAB9FA-ED9B-4494-963A-08EB62EE876C}</ProjectGuid>
-    <RootNamespace>DataReconstruction</RootNamespace>
+    <ProjectGuid>{8E0AB662-0312-4A80-AA2C-00016392E4D4}</ProjectGuid>
+    <RootNamespace>CSVtoInertial</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -71,22 +71,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>data_reco</TargetName>
+    <TargetName>csv_to_inertial</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>data_reco</TargetName>
+    <TargetName>csv_to_inertial</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>data_reco</TargetName>
+    <TargetName>csv_to_inertial</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>data_reco</TargetName>
+    <TargetName>csv_to_inertial</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -94,6 +94,9 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -101,6 +104,9 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -111,6 +117,7 @@
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
@@ -124,36 +131,13 @@
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\io_lib.hpp" />
-    <ClInclude Include="..\src\jsoncons\json.hpp" />
-    <ClInclude Include="..\src\jsoncons\jsoncons.hpp" />
-    <ClInclude Include="..\src\jsoncons\jsoncons_config.hpp" />
-    <ClInclude Include="..\src\jsoncons\jsoncons_io.hpp" />
-    <ClInclude Include="..\src\jsoncons\json_deserializer.hpp" />
-    <ClInclude Include="..\src\jsoncons\json_error_category.hpp" />
-    <ClInclude Include="..\src\jsoncons\json_filter.hpp" />
-    <ClInclude Include="..\src\jsoncons\json_input_handler.hpp" />
-    <ClInclude Include="..\src\jsoncons\json_output_handler.hpp" />
-    <ClInclude Include="..\src\jsoncons\json_parser.hpp" />
-    <ClInclude Include="..\src\jsoncons\json_reader.hpp" />
-    <ClInclude Include="..\src\jsoncons\json_serializer.hpp" />
-    <ClInclude Include="..\src\jsoncons\json_structures.hpp" />
-    <ClInclude Include="..\src\jsoncons\json_type_traits.hpp" />
-    <ClInclude Include="..\src\jsoncons\output_format.hpp" />
-    <ClInclude Include="..\src\jsoncons\ovectorstream.hpp" />
-    <ClInclude Include="..\src\jsoncons\parse_error_handler.hpp" />
-    <ClInclude Include="..\src\math_func.h" />
-    <ClInclude Include="..\src\params.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\src\data_reco.cpp" />
-    <ClCompile Include="..\src\math_func.cpp" />
-    <ClCompile Include="..\src\math_lib.c" />
+    <ClCompile Include="..\src\csv_to_inertial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

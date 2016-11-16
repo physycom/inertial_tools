@@ -45,7 +45,9 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #define BOTH_MODE           'b'
 
 void usage(char * progname) {
-  std::cout << "Usage: " << progname << " alpha nx ny nz path/to/data/file" << std::endl;
+  std::vector<std::string> tokens;
+  boost::split(tokens, progname, boost::is_any_of("/\\"));
+  std::cout << "Usage: " << tokens.back() << " alpha nx ny nz path/to/data/file" << std::endl;
   std::cout << "       alpha : angle of rotation in DEGREES" << std::endl;
   std::cout << "       (nx, ny, nz) : components of the rotation axis" << std::endl;
   std::cout << "       path/to/data/file must be a tab-separated value file, compliant with PHYSYCOM inertial standard" << std::endl;

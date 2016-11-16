@@ -50,7 +50,9 @@ using namespace boost::algorithm;
 #define MINOR_VERSION       1
 
 void usage(char * progname) {
-  std::cout << "Usage: " << progname << " init_file data_file" << std::endl;
+  std::vector<std::string> tokens;
+  boost::split(tokens, progname, boost::is_any_of("/\\"));
+  std::cout << "Usage: " << tokens.back() << " init_file data_file" << std::endl;
   std::cout << "       init_file must be a valid initial condition JSON file (launch with no arguments to create a template)" << std::endl;
   std::cout << "       data_file must be \"inertial\" PHYSYCOM standard compliant" << std::endl << std::endl;
   std::cout << "Usage: " << progname << " -init_t" << std::endl;

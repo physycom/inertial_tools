@@ -40,7 +40,9 @@ using namespace std;
 #define MINOR_VERSION       0
 
 void usage(char * progname) {
-  std::cout << "Usage: " << progname << " path/to/data/file column_index min_value max_value" << std::endl;
+  std::vector<std::string> tokens;
+  boost::split(tokens, progname, boost::is_any_of("/\\"));
+  std::cout << "Usage: " << tokens.back() << " path/to/data/file column_index min_value max_value" << std::endl;
   std::cout << "       path/to/data/file must be a tab-separated value file" << std::endl;
   std::cout << "       column_index is an int indicating the column to filter, starting from 0" << std::endl;
   std::cout << "       min_value (max_value) represents the min (max) value which passes the filtering, use \"unset\" for both to unset" << std::endl;

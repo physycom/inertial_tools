@@ -21,6 +21,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Mutual Entropy", "Mutual En
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Inertial Stats", "Inertial Stats\Inertial Stats.vcxproj", "{A8FE7D80-FEDF-4422-AADF-30C483E2E3A3}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CSV to Inertial", "CSV to Inertial\CSV to Inertial.vcxproj", "{8E0AB662-0312-4A80-AA2C-00016392E4D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -101,6 +103,14 @@ Global
 		{A8FE7D80-FEDF-4422-AADF-30C483E2E3A3}.Release|x64.Build.0 = Release|x64
 		{A8FE7D80-FEDF-4422-AADF-30C483E2E3A3}.Release|x86.ActiveCfg = Release|Win32
 		{A8FE7D80-FEDF-4422-AADF-30C483E2E3A3}.Release|x86.Build.0 = Release|Win32
+		{8E0AB662-0312-4A80-AA2C-00016392E4D4}.Debug|x64.ActiveCfg = Debug|x64
+		{8E0AB662-0312-4A80-AA2C-00016392E4D4}.Debug|x64.Build.0 = Debug|x64
+		{8E0AB662-0312-4A80-AA2C-00016392E4D4}.Debug|x86.ActiveCfg = Debug|Win32
+		{8E0AB662-0312-4A80-AA2C-00016392E4D4}.Debug|x86.Build.0 = Debug|Win32
+		{8E0AB662-0312-4A80-AA2C-00016392E4D4}.Release|x64.ActiveCfg = Release|x64
+		{8E0AB662-0312-4A80-AA2C-00016392E4D4}.Release|x64.Build.0 = Release|x64
+		{8E0AB662-0312-4A80-AA2C-00016392E4D4}.Release|x86.ActiveCfg = Release|Win32
+		{8E0AB662-0312-4A80-AA2C-00016392E4D4}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

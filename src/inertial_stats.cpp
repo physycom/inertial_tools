@@ -43,7 +43,9 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #define MINOR_VERSION       3
 
 void usage(char * progname) {
-  std::cerr << "Usage: " << progname << " path/to/data/file" << std::endl;
+  std::vector<std::string> tokens;
+  boost::split(tokens, progname, boost::is_any_of("/\\"));
+  std::cerr << "Usage: " << tokens.back() << " path/to/data/file" << std::endl;
 }
 
 int main(int argc, char **argv) {

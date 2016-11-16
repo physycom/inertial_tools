@@ -194,7 +194,9 @@ void find_angle_H(double *tetaH, double *dtetaH, std::vector< std::vector<double
 
 
 void usage(char * progname) {
-  std::cout << "Usage: " << progname << " -[h/v/b] path/to/data/file " << std::endl;
+  std::vector<std::string> tokens;
+  boost::split(tokens, progname, boost::is_any_of("/\\"));
+  std::cout << "Usage: " << tokens.back() << " -[h/v/b] path/to/data/file " << std::endl;
   std::cout << "       [h]orizontal calibration" << std::endl;
   std::cout << "       [v]ertical calibration" << std::endl;
   std::cout << "       [b]oth calibration" << std::endl;

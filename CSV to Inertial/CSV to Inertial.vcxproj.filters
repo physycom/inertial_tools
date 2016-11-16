@@ -13,36 +13,13 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Script">
-      <UniqueIdentifier>{6cd3c586-89f1-457f-8d90-2e7abc5d31a5}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\io_lib.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\params.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\src\mutual_entropy.cpp">
+    <ClCompile Include="..\src\csv_to_inertial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\script\me_dynamic_scan.plt">
-      <Filter>Script</Filter>
-    </None>
-    <None Include="..\script\me_dynamic_scan.sh">
-      <Filter>Script</Filter>
-    </None>
-    <None Include="..\script\me_shift_scan.plt">
-      <Filter>Script</Filter>
-    </None>
-    <None Include="..\script\me_shift_scan.sh">
-      <Filter>Script</Filter>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
 </Project>
