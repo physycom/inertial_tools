@@ -81,7 +81,7 @@ ostream& operator<<(ostream &ost, const Filter &f) {
 //////// MAIN
 void usage(char * progname) {
   vector<string> tokens;
-  boost::split(tokens, string(progname), boost::is_any_of("/\\"));
+  boost::split(tokens, progname, boost::is_any_of("/\\"));
   cout << "Usage: " << tokens.back() << " -filter path/to/filter [-subtract] path/to/data/file" << endl;
   cout << "       -filter create a filter from file" << endl;
   cout << "       -subtract remove the average value of each column from the data [optional]" << endl;
