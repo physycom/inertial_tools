@@ -41,7 +41,7 @@ $(OBJ_FOLDER)/%.o: $(SRC_FOLDER)/%.c*
 	$(CXX) $(OPT) -c -o $@ $<
 
 $(EXE_FOLDER)/%.exe: $(SRC_FOLDER)/%.cpp
-	$(CXX) $(OPT) -I$(SRC_FOLDER) -o $@ $(DEPS) $< $(LIB) 
+	$(CXX) $(OPT) -I$(SRC_FOLDER)/jsoncons/src -o $@ $(DEPS) $< $(LIB) 
 
 clean:
 	rm -f $(DEPS)

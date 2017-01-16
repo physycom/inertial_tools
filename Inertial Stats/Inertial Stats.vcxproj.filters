@@ -16,9 +16,6 @@
     <Filter Include="Tools">
       <UniqueIdentifier>{56601638-79b0-4c13-8ef4-1c306fedae86}</UniqueIdentifier>
     </Filter>
-    <Filter Include="File di intestazione\jsoncons">
-      <UniqueIdentifier>{1b813b8e-210a-4496-a125-ca9b9b996fba}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\inertial_stats.cpp">
@@ -31,57 +28,6 @@
   <ItemGroup>
     <ClInclude Include="..\src\math_lib.h">
       <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\jsoncons\json.hpp">
-      <Filter>File di intestazione\jsoncons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\jsoncons\json_deserializer.hpp">
-      <Filter>File di intestazione\jsoncons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\jsoncons\json_error_category.hpp">
-      <Filter>File di intestazione\jsoncons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\jsoncons\json_filter.hpp">
-      <Filter>File di intestazione\jsoncons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\jsoncons\json_input_handler.hpp">
-      <Filter>File di intestazione\jsoncons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\jsoncons\json_output_handler.hpp">
-      <Filter>File di intestazione\jsoncons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\jsoncons\json_parser.hpp">
-      <Filter>File di intestazione\jsoncons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\jsoncons\json_reader.hpp">
-      <Filter>File di intestazione\jsoncons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\jsoncons\json_serializer.hpp">
-      <Filter>File di intestazione\jsoncons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\jsoncons\json_structures.hpp">
-      <Filter>File di intestazione\jsoncons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\jsoncons\json_type_traits.hpp">
-      <Filter>File di intestazione\jsoncons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\jsoncons\jsoncons.hpp">
-      <Filter>File di intestazione\jsoncons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\jsoncons\jsoncons_config.hpp">
-      <Filter>File di intestazione\jsoncons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\jsoncons\jsoncons_io.hpp">
-      <Filter>File di intestazione\jsoncons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\jsoncons\output_format.hpp">
-      <Filter>File di intestazione\jsoncons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\jsoncons\ovectorstream.hpp">
-      <Filter>File di intestazione\jsoncons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\jsoncons\parse_error_handler.hpp">
-      <Filter>File di intestazione\jsoncons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

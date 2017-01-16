@@ -18,10 +18,6 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 ***************************************************************************/
 
 
-#ifdef _MSC_VER
-#define _CRT_SECURE_NO_WARNINGS
-#define _SCL_SECURE_NO_WARNINGS
-#endif
 
 #include "params.h"
 #include <iostream>

@@ -17,14 +17,10 @@ You should have received a copy of the GNU General Public License
 along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 ***************************************************************************/
 
-#define _USE_MATH_DEFINES        // for math constants
-
-#ifdef _MSC_VER
-#define _CRT_SECURE_NO_WARNINGS  // MVS C warnings shut upper
-#define _SCL_SECURE_NO_WARNINGS  // MVS C warnings shut upper
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
 #endif
 
-// std include
 #include <iostream>
 #include <complex>
 #include <fstream>
@@ -38,7 +34,7 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 // jsoncons include
 #include "jsoncons/json.hpp"
 
-// unibo include
+
 #include "params.h"
 #include "io_lib.hpp"
 #include "math_func.h"

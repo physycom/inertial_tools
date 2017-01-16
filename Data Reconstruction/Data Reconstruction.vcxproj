@@ -72,27 +72,34 @@
     <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
     <TargetName>data_reco</TargetName>
+    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
     <TargetName>data_reco</TargetName>
+    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
     <TargetName>data_reco</TargetName>
+    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
     <TargetName>data_reco</TargetName>
+    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS
+;_SCL_SECURE_NO_WARNINGS
+;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -100,6 +107,9 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS
+;_SCL_SECURE_NO_WARNINGS
+;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -109,6 +119,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS
+;_SCL_SECURE_NO_WARNINGS
+;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -122,6 +135,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS
+;_SCL_SECURE_NO_WARNINGS
+;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -130,23 +146,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\src\io_lib.hpp" />
-    <ClInclude Include="..\src\jsoncons\json.hpp" />
-    <ClInclude Include="..\src\jsoncons\jsoncons.hpp" />
-    <ClInclude Include="..\src\jsoncons\jsoncons_config.hpp" />
-    <ClInclude Include="..\src\jsoncons\jsoncons_io.hpp" />
-    <ClInclude Include="..\src\jsoncons\json_deserializer.hpp" />
-    <ClInclude Include="..\src\jsoncons\json_error_category.hpp" />
-    <ClInclude Include="..\src\jsoncons\json_filter.hpp" />
-    <ClInclude Include="..\src\jsoncons\json_input_handler.hpp" />
-    <ClInclude Include="..\src\jsoncons\json_output_handler.hpp" />
-    <ClInclude Include="..\src\jsoncons\json_parser.hpp" />
-    <ClInclude Include="..\src\jsoncons\json_reader.hpp" />
-    <ClInclude Include="..\src\jsoncons\json_serializer.hpp" />
-    <ClInclude Include="..\src\jsoncons\json_structures.hpp" />
-    <ClInclude Include="..\src\jsoncons\json_type_traits.hpp" />
-    <ClInclude Include="..\src\jsoncons\output_format.hpp" />
-    <ClInclude Include="..\src\jsoncons\ovectorstream.hpp" />
-    <ClInclude Include="..\src\jsoncons\parse_error_handler.hpp" />
     <ClInclude Include="..\src\math_func.h" />
     <ClInclude Include="..\src\params.h" />
   </ItemGroup>
