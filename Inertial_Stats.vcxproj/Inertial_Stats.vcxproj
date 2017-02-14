@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{8E0AB662-0312-4A80-AA2C-00016392E4D4}</ProjectGuid>
-    <RootNamespace>CSVtoInertial</RootNamespace>
+    <ProjectGuid>{A8FE7D80-FEDF-4422-AADF-30C483E2E3A3}</ProjectGuid>
+    <RootNamespace>InertialStats</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -70,23 +70,27 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>csv_to_inertial</TargetName>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>inertial_stats</TargetName>
+    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>csv_to_inertial</TargetName>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>inertial_stats</TargetName>
+    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>csv_to_inertial</TargetName>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>inertial_stats</TargetName>
+    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>csv_to_inertial</TargetName>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>inertial_stats</TargetName>
+    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -97,9 +101,6 @@
 ;_SCL_SECURE_NO_WARNINGS
 ;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -110,9 +111,6 @@
 ;_SCL_SECURE_NO_WARNINGS
 ;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -126,7 +124,6 @@
 ;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
@@ -143,15 +140,20 @@
 ;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\csv_to_inertial.cpp" />
+    <ClCompile Include="..\src\inertial_stats.cpp" />
+    <ClCompile Include="..\src\math_lib.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\math_lib.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\script\inertial_analysis_scan.sh" />
+    <None Include="..\src\jsoncons\json_parser.hpp.orig" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

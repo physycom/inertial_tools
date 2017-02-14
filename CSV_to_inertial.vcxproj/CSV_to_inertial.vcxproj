@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{43B06A22-0778-454A-BBE8-E45D608339F5}</ProjectGuid>
-    <RootNamespace>DataGenerator</RootNamespace>
+    <ProjectGuid>{8E0AB662-0312-4A80-AA2C-00016392E4D4}</ProjectGuid>
+    <RootNamespace>CSVtoInertial</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -70,23 +70,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>data_gen</TargetName>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>csv_to_inertial</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>data_gen</TargetName>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>csv_to_inertial</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>data_gen</TargetName>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>csv_to_inertial</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>data_gen</TargetName>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>csv_to_inertial</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -97,6 +97,9 @@
 ;_SCL_SECURE_NO_WARNINGS
 ;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -107,6 +110,9 @@
 ;_SCL_SECURE_NO_WARNINGS
 ;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -120,6 +126,7 @@
 ;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
@@ -136,19 +143,13 @@
 ;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\data_gen.cpp" />
-    <ClCompile Include="..\src\math_func.cpp" />
-    <ClCompile Include="..\src\math_lib.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\src\math_func.h" />
-    <ClInclude Include="..\src\math_lib.h" />
-    <ClInclude Include="..\src\params.h" />
+    <ClCompile Include="..\src\csv_to_inertial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

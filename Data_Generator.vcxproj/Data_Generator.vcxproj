@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{1C49840B-9E24-4169-A3F9-6787C9F235B8}</ProjectGuid>
-    <RootNamespace>MutualEntropy</RootNamespace>
+    <ProjectGuid>{43B06A22-0778-454A-BBE8-E45D608339F5}</ProjectGuid>
+    <RootNamespace>DataGenerator</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -70,30 +70,29 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>mutual_entropy</TargetName>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>data_gen</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>mutual_entropy</TargetName>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>data_gen</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>mutual_entropy</TargetName>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>data_gen</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>mutual_entropy</TargetName>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>data_gen</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <OpenMPSupport>true</OpenMPSupport>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS
 ;_SCL_SECURE_NO_WARNINGS
 ;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -104,7 +103,6 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <OpenMPSupport>true</OpenMPSupport>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS
 ;_SCL_SECURE_NO_WARNINGS
 ;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -117,7 +115,6 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <OpenMPSupport>true</OpenMPSupport>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS
 ;_SCL_SECURE_NO_WARNINGS
 ;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -134,7 +131,6 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <OpenMPSupport>true</OpenMPSupport>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS
 ;_SCL_SECURE_NO_WARNINGS
 ;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -145,17 +141,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\io_lib.hpp" />
+    <ClCompile Include="..\src\data_gen.cpp" />
+    <ClCompile Include="..\src\math_func.cpp" />
+    <ClCompile Include="..\src\math_lib.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\math_func.h" />
+    <ClInclude Include="..\src\math_lib.h" />
     <ClInclude Include="..\src\params.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\mutual_entropy.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\script\me_dynamic_scan.plt" />
-    <None Include="..\script\me_dynamic_scan.sh" />
-    <None Include="..\script\me_shift_scan.plt" />
-    <None Include="..\script\me_shift_scan.sh" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

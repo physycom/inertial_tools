@@ -18,21 +18,9 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\src\math_func.cpp" />
-    <ClCompile Include="..\src\math_lib.c" />
-    <ClCompile Include="..\src\speed_compare.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\src\math_func.h" />
-    <ClInclude Include="..\src\math_lib.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{76F2B025-50F1-4D2A-A47D-9AF8EB66EAFE}</ProjectGuid>
-    <RootNamespace>SpeedCompare</RootNamespace>
+    <ProjectGuid>{43FAB9FA-ED9B-4494-963A-08EB62EE876C}</ProjectGuid>
+    <RootNamespace>DataReconstruction</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -82,23 +70,27 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>speed_compare</TargetName>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>data_reco</TargetName>
+    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>speed_compare</TargetName>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>data_reco</TargetName>
+    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>speed_compare</TargetName>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>data_reco</TargetName>
+    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>speed_compare</TargetName>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>data_reco</TargetName>
+    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -152,6 +144,19 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\io_lib.hpp" />
+    <ClInclude Include="..\src\math_func.h" />
+    <ClInclude Include="..\src\params.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\data_reco.cpp" />
+    <ClCompile Include="..\src\math_func.cpp" />
+    <ClCompile Include="..\src\math_lib.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\boost.1.62.0.0\build\native\boost.targets" Condition="Exists('..\packages\boost.1.62.0.0\build\native\boost.targets')" />

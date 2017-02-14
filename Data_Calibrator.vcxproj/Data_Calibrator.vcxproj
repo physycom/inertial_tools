@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{43FAB9FA-ED9B-4494-963A-08EB62EE876C}</ProjectGuid>
-    <RootNamespace>DataReconstruction</RootNamespace>
+    <ProjectGuid>{AF6473F4-E51C-47E9-8750-ADD0ABDF48CF}</ProjectGuid>
+    <RootNamespace>DataCalibrator</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -70,27 +70,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>data_reco</TargetName>
-    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>data_calibrator</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>data_reco</TargetName>
-    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>data_calibrator</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>data_reco</TargetName>
-    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>data_calibrator</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>data_reco</TargetName>
-    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>data_calibrator</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -145,14 +141,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\io_lib.hpp" />
-    <ClInclude Include="..\src\math_func.h" />
-    <ClInclude Include="..\src\params.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\src\data_reco.cpp" />
+    <ClCompile Include="..\src\data_calibrator.cpp" />
     <ClCompile Include="..\src\math_func.cpp" />
     <ClCompile Include="..\src\math_lib.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\io_lib.hpp" />
+    <ClInclude Include="..\src\math_func.h" />
+    <ClInclude Include="..\src\math_lib.h" />
+    <ClInclude Include="..\src\math_struct.h" />
+    <ClInclude Include="..\src\params.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

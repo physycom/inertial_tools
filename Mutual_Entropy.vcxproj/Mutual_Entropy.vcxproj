@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C9E8254D-265D-4C4E-BCE3-DAD7CFC91D6B}</ProjectGuid>
-    <RootNamespace>DataPurge</RootNamespace>
+    <ProjectGuid>{1C49840B-9E24-4169-A3F9-6787C9F235B8}</ProjectGuid>
+    <RootNamespace>MutualEntropy</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -70,29 +70,30 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>data_purge</TargetName>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>mutual_entropy</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>data_purge</TargetName>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>mutual_entropy</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>data_purge</TargetName>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>mutual_entropy</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
-    <TargetName>data_purge</TargetName>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
+    <TargetName>mutual_entropy</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <OpenMPSupport>true</OpenMPSupport>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS
 ;_SCL_SECURE_NO_WARNINGS
 ;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -103,6 +104,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <OpenMPSupport>true</OpenMPSupport>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS
 ;_SCL_SECURE_NO_WARNINGS
 ;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -115,6 +117,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <OpenMPSupport>true</OpenMPSupport>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS
 ;_SCL_SECURE_NO_WARNINGS
 ;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -131,6 +134,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <OpenMPSupport>true</OpenMPSupport>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS
 ;_SCL_SECURE_NO_WARNINGS
 ;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -141,12 +145,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\data_purge.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\src\io_lib.hpp" />
+    <ClInclude Include="..\src\params.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\mutual_entropy.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\script\me_dynamic_scan.plt" />
+    <None Include="..\script\me_dynamic_scan.sh" />
+    <None Include="..\script\me_shift_scan.plt" />
+    <None Include="..\script\me_shift_scan.sh" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
