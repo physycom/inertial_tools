@@ -18,6 +18,7 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 ***************************************************************************/
 
 #include <vector>
+#include <cstddef>
 
 #include "math_func.h"
 #include "libbbmutils/bbmutils.h"
@@ -73,3 +74,5 @@ std::vector<double> forward_derivative(std::vector<double> F, std::vector<double
   }
   return f;
 }
+
+

@@ -25,3 +25,5 @@ std::vector<double> Integrate(std::vector<double> &x, std::vector<double> &f, do
 std::vector< std::vector<double> > rotate_inertial(std::vector< std::vector<double> > data, MAT3D rotation);
 
 std::vector<double> forward_derivative(std::vector<double> F, std::vector<double> x);
+
+
