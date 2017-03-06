@@ -82,12 +82,14 @@ void find_angle_V(double *tetaV, double *dtetaV, VEC3D *axis, std::vector< std::
   memcpy(&acc_n, &accV_mean, sizeof accV_mean);
   normalize_vec3d(&acc_n);
   prod_cross_3d(&ortho, &acc_n, &z_axis);
-  *axis = normalize_vec3d(ortho);
+  memcpy(&acc_n, &accV_mean, sizeof accV_mean);
+  memcpy(axis, &ortho, sizeof ortho);
+  normalize_vec3d(axis);
 
   /* angle */
   double costetaV, sintetaV, errtetaV;
-  costetaV = prod_dot(acc_n, z_axis);
-  sintetaV = mod_vec3d(&ortho);
+  costetaV = prod_dot_3d(&acc_n, &z_axis);
+  sintetaV = ortho.mod;
   errtetaV = 1 - costetaV*costetaV - sintetaV*sintetaV;
   *tetaV = atan2(sintetaV, costetaV);
 
@@ -148,8 +150,8 @@ void find_angle_H(double *tetaH, double *dtetaH, std::vector< std::vector<double
       H_samples++;
     }
   }
-  multiply_vec3d(1.0 / (float)H_samples, &accH_mean);
-  multiply_mat3d(1.0 / (float)H_samples, &accH_cov);
+  multiply_vec3d(&accH_mean, 1.0 / (float)H_samples);
+  multiply_mat3d(&accH_cov, 1.0 / (float)H_samples);
 
   std::cout << "Evaluating HORIZONTAL angle from " << H_samples << "/" << data.size() << " ( " << int(100 * H_samples / double(data.size())) << " %) samples" << std::endl;
 
@@ -223,8 +225,11 @@ int main(int argc, char **argv) {
 
   if (mode == HORIZONTAL_MODE) {
     double tetaH = 0, dtetaH = 0;
+    VEC3D z_axis;
+    set_vec3d(&z_axis, 0.0, 0.0, 1.0);
     find_angle_H(&tetaH, &dtetaH, data);
-    MAT3D rotation = make_rotation(set_vec3d(0., 0., 1.), tetaH);
+    MAT3D rotation;
+    make_rotation(&rotation, &z_axis, tetaH);
     std::vector< std::vector<double> > data_r = rotate_inertial(data, rotation);
     std::string outfile = input_file.substr(0, input_file.size() - 4) + "_rotH.txt";
     dump_to_csv(data_r, outfile);
@@ -233,7 +238,8 @@ int main(int argc, char **argv) {
     double tetaV = 0, dtetaV = 0;
     VEC3D axis;
     find_angle_V(&tetaV, &dtetaV, &axis, data);
-    MAT3D rotation = make_rotation(axis, tetaV);
+    MAT3D rotation;
+    make_rotation(&rotation, &axis, tetaV);
     std::vector< std::vector<double> > data_r = rotate_inertial(data, rotation);
     std::string outfile = input_file.substr(0, input_file.size() - 4) + "_rotV.txt";
     dump_to_csv(data_r, outfile);

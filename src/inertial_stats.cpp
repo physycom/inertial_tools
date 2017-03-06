@@ -128,11 +128,11 @@ int main(int argc, char **argv) {
     quad_mix.yx += ay[i] * gx[i]; quad_mix.yy += ay[i] * gy[i]; quad_mix.yz += ay[i] * gz[i];
     quad_mix.zx += az[i] * gx[i]; quad_mix.zy += az[i] * gy[i]; quad_mix.zz += az[i] * gz[i];
   }
-  multiply_vec3d(1. / math_float(ax.size()), &ave_acc);
-  multiply_vec3d(1. / math_float(ax.size()), &ave_gyr);
-  multiply_mat3d(1. / math_float(ax.size()), &quad_acc);
-  multiply_mat3d(1. / math_float(ax.size()), &quad_gyr);
-  multiply_mat3d(1. / math_float(ax.size()), &quad_mix);
+  multiply_vec3d(&ave_acc, 1. / math_float(ax.size()));
+  multiply_vec3d(&ave_gyr, 1. / math_float(ax.size()));
+  multiply_mat3d(&quad_acc, 1. / math_float(ax.size()));
+  multiply_mat3d(&quad_gyr, 1. / math_float(ax.size()));
+  multiply_mat3d(&quad_mix, 1. / math_float(ax.size()));
 
   // Statistics estimator
   VEC3D devstd_acc, devstd_gyr;
