@@ -31,7 +31,7 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 
 #include "io_lib.hpp"
 #include "math_func.h"
-#include "math_lib.h"
+#include "libbbmutils/bbmutils.h"
 #include "params.h"
 
 #define MAJOR_VERSION       2
@@ -80,8 +80,10 @@ int main(int argc, char **argv) {
   std::vector< std::vector<std::string> > file_tokens = Read_from_file(input_file);
   std::vector< std::vector<double> > data = tokens_to_double(file_tokens);
 
-  VEC3D axis = set_vec3d(nx, ny, nz);
-  MAT3D rotation = make_rotation(axis, alpha);
+  VEC3D axis;
+  set_vec3d(&axis, nx, ny, nz);
+  MAT3D rotation;
+  make_rotation(&rotation, &axis, alpha);
   std::vector< std::vector<double> > data_r = rotate_inertial(data, rotation);
   std::string outfile = input_file.substr(0, input_file.size() - 4) + "_rot.txt";
   dump_to_csv(data_r, outfile);

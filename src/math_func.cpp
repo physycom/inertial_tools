@@ -20,7 +20,7 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #include <vector>
 
 #include "math_func.h"
-#include "math_lib.h"
+#include "libbbmutils/bbmutils.h"
 #include "params.h"
 
 std::vector<double> Integrate(std::vector<double> &x, std::vector<double> &f, double F0) {
@@ -44,9 +44,11 @@ std::vector< std::vector<double> > rotate_inertial(std::vector< std::vector<doub
     row.push_back(data[i][0]);   // timestamp
     row.push_back(data[i][1]);   // speed
 
-    VEC6D ag = set_vec6d(data[i][AX_INDEX], data[i][AY_INDEX], data[i][AZ_INDEX],
+    VEC6D ag;
+    set_vec6d(&ag, data[i][AX_INDEX], data[i][AY_INDEX], data[i][AZ_INDEX],
       data[i][GX_INDEX], data[i][GY_INDEX], data[i][GZ_INDEX]);
-    VEC6D ag_r = rotate_vec6d(rotation, ag);
+    VEC6D ag_r;
+    rotate_vec6d(&ag_r, &rotation, &ag);
     row.push_back(ag_r.a.x); row.push_back(ag_r.a.y); row.push_back(ag_r.a.z);
     row.push_back(ag_r.g.x); row.push_back(ag_r.g.y); row.push_back(ag_r.g.z);
 

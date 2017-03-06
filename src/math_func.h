@@ -18,8 +18,7 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 ***************************************************************************/
 
 #include <vector>
-
-#include "math_struct.h"
+#include "libbbmutils/bbmutils.h"
 
 std::vector<double> Integrate(std::vector<double> &x, std::vector<double> &f, double F0 = 0);
 

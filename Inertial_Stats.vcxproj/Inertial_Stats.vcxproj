@@ -72,25 +72,25 @@
     <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
     <TargetName>inertial_stats</TargetName>
-    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)\src\;$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
     <TargetName>inertial_stats</TargetName>
-    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)\src\;$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
     <TargetName>inertial_stats</TargetName>
-    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)\src\;$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
     <TargetName>inertial_stats</TargetName>
-    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)\src\;$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -146,15 +146,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\inertial_stats.cpp" />
-    <ClCompile Include="..\src\math_lib.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\src\math_lib.h" />
+    <ClCompile Include="..\src\libbbmutils\src\bbmutils.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\script\inertial_analysis_scan.sh" />
     <None Include="..\src\jsoncons\json_parser.hpp.orig" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\libbbmutils\bbmutils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -18,20 +18,14 @@
     <ClCompile Include="..\src\data_rotator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\math_lib.c">
+    <ClCompile Include="..\src\math_func.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\math_func.cpp">
+    <ClCompile Include="..\src\libbbmutils\src\bbmutils.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\math_lib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\math_struct.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\params.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -39,6 +33,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\io_lib.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\libbbmutils\bbmutils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -32,11 +32,12 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 
 #include "jsoncons/json.hpp"
 #include "io_lib.hpp"
-#include "math_lib.h"
-
+#include "libbbmutils/bbmutils.h"
 
 #define MAJOR_VERSION       0
 #define MINOR_VERSION       3
+
+typedef double math_float;
 
 void usage(char * progname) {
   std::vector<std::string> tokens;

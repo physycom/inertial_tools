@@ -72,21 +72,25 @@
     <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
     <TargetName>data_rotator</TargetName>
+    <IncludePath>$(SolutionDir)\src\;$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
     <TargetName>data_rotator</TargetName>
+    <IncludePath>$(SolutionDir)\src\;$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
     <TargetName>data_rotator</TargetName>
+    <IncludePath>$(SolutionDir)\src\;$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(SolutionDir)\obj\$(ProjectName)\</IntDir>
     <TargetName>data_rotator</TargetName>
+    <IncludePath>$(SolutionDir)\src\;$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -142,14 +146,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\data_rotator.cpp" />
+    <ClCompile Include="..\src\libbbmutils\src\bbmutils.c" />
     <ClCompile Include="..\src\math_func.cpp" />
-    <ClCompile Include="..\src\math_lib.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\io_lib.hpp" />
+    <ClInclude Include="..\src\libbbmutils\bbmutils.h" />
     <ClInclude Include="..\src\math_func.h" />
-    <ClInclude Include="..\src\math_lib.h" />
-    <ClInclude Include="..\src\math_struct.h" />
     <ClInclude Include="..\src\params.h" />
   </ItemGroup>
   <ItemGroup>

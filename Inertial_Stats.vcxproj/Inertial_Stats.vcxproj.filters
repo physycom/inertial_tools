@@ -21,14 +21,9 @@
     <ClCompile Include="..\src\inertial_stats.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\math_lib.c">
+    <ClCompile Include="..\src\libbbmutils\src\bbmutils.c">
       <Filter>File di origine</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\src\math_lib.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\script\inertial_analysis_scan.sh">
@@ -36,5 +31,10 @@
     </None>
     <None Include="..\src\jsoncons\json_parser.hpp.orig" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\libbbmutils\bbmutils.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

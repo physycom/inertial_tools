@@ -1,3 +1,6 @@
 [submodule "src/jsoncons"]
 	path = src/jsoncons
 	url = https://github.com/danielaparker/jsoncons.git
+[submodule "src/libbbmutils"]
+	path = src/libbbmutils
+	url = https://github.com/physycom/libbbmutils.git

@@ -1,3 +1,9 @@
+---
+documentclass: physycomen
+title:  "inertial_tools"
+author: "Fabbri, Sinigardi"
+---
+
 <a href="http://www.physycom.unibo.it"> 
 <div class="image">
 <img src="https://cdn.rawgit.com/physycom/templates/697b327d/logo_unibo.png" width="90" height="90" alt="© Physics of Complex Systems Laboratory - Physics and Astronomy Department - University of Bologna"> 
@@ -24,6 +30,7 @@ This document describes a collection of tools, developed within a standardized f
 Starting from the knowledge of a time series of inertial data it is then possible to perform several analysis which ranges from 2D/3D motion reconstruction for small time intervals (8-10 seconds) to the estimation of statistical quantities which provides a number of markers describing the motion itself and the global quality of the dataset. The statistical analysis are usually performed on large time scales, from hours up to weeks.
 
 The suite is composed of tools which match a specific analysis pattern/method and are intended to serve a specific purpose, as described below. The tools are:
+
 - `csv_to_inertial`:
 
 	As we discovered by facing dataset coming from different sources (vendors, models, firmwares, devices) the development of a standardized format is a milestone. This tool allows to convert from a generic CSV dataset to our `inertial` [format](https://github.com/physycom/file_format_specifications). 
@@ -40,25 +47,19 @@ The suite is composed of tools which match a specific analysis pattern/method an
 
 	This is a support tool which somehow reverts the process of rigig body motion reconstruction. Starting from a given (hardcoded) spatial trajectory for the rigid body's center of mass this tool creates a discretized version of the inertial quantities (in the sense precised above) associated to such a motion. This tool has revealed crucial to test advanced motion reconstrution algorithm since the possibility of creating a dataset from a fully analytically controlled motion offers the opportunity to test, fine-tune and debug in a supervised way.
 
-	*IMMAGINE DEI DATI GENERATI PER LA CHICANE*
-
 - `data_purge`
 
 	As a matter of fact the data filtering operation is crucial when one is addressed to numerical dataset analysis. In our case, due to the intrinsic noisyness of the inertial data coming from MEMS cheap sensors, the filtering operation is even more difficult since the information carried by our data spans a very broad frequency band and are therefore difficult to detect. The quest for optimal filter parameter is made even harder by the trial-and-error intrinsic nature of the process. To overcome this difficulty we developed a flexible and performant filtering program which is capable of applying a user-defined filter pattern to a given dataset. With the aid of this tool it is then possible to automatize to process of optimizing the filter shape and parameters, increasing the effectiveness of the filter itself.
-
-	*IMMAGINE DELLA PURGA*
 
 - `data_reconstruction`
 
 	Motion reconstruction from MEMS inertial data is a challenging task. The extreme noisiness of the datasets is difficult to control numerically and the extent of the reconstruction is confined within several seconds (8-10) from the initial condition, which is as well difficult to synchronize due to the fact that is usually provided by a different sensor. Nonetheless we managed to collect various previous tool developed by group into a single standardized tool which perform a numerical integration of the inertial data to reconstruct the motion of the rigid body.
 
-	*QUALCOSA DI RICOSTRUITO*
-
 - `data_rotator`
 
 	A tool which enables the manipulation of a given dataset in terms of rotation. It has been developed as an intermediate layer between the original dataset and the `data_reconstruction` tool with aim of referring the inertial data to the correct frame of reference, i.e x axis in the direction of motion, y axis orthogonal to it and a vertical z axis.
 
-	*IMMAGINE DI DATI RUOTATI*
+	![A graphical sample of `data_rotator` capabilities.](doc/data_rotator.png)
 
 - `inertial_stats`
 
@@ -69,21 +70,19 @@ The suite is composed of tools which match a specific analysis pattern/method an
 
 	These numerical quantities are useful for a number of purposes: from a quantitative noise estimation of the device to the dynamical statistical characterization of a given dataset, in terms of driving behavior or overall device functionality monitoring.
 
-	*IMMAGINE DI NOISE TEST*
+	![A sample output of `inertial_tools` based on some electronic noise test.](doc/inertial_stats.png)
 
 - `mutual_entropy`
 
 	This tool implements the so called Mutual Information technique to estimate numerically the degree of coeherence between the different inertial quantities. By employing the evaluation of a parameter called _Mutual Entropy_ it is possible to classify quantitatively the performance of accelerometer and gyroscope related to the same dataset.
 
-	*IMMAGINE MUTUAL ENTROPY*
+	![A sample output of `mutual_entropy` based on on-the-road test.](doc/mutual_entropy.png)
 
 - `speed_compare`
 
 	This tool provides a quantitative estimate of the time coherence and synchronicity between the inertial sensors and the GNSS module. This is achieved by implementing an integration scheme which is capable of reconstructing the modulus of the linear velocity vector in the two-dimensional plane of motion of the device, considering only acceleration data. Once this is done a smoothing and filtering process on the velocity data is performed (we recall that in usual situation the rate of the inertial data is roughly an order of magnitude greater than the rate of the geopositioning data) and then the two velocity dataset are compared with respect to time. The purpose of this tool is twofold:
 	- estimate the given degree of coherence and synchronicity;
 	- provide a quantitative way to correct, in post-processing, any discrepancy with the aim of aiding the `data_reconstruction` algorithm.
-
-	*IMMAGINE SPEED COMPARE, QUESTA BUONA MAI AVUTA*
 
 This suite has been developed by the Physics of the City laboratory, Physics and Astronomy Department, University of Bologna, as an internal support tool to support the consultancy activity within the official collaboration with UnipolSai.
 

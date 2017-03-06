@@ -30,7 +30,7 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #include <limits> 
 
 #include "io_lib.hpp"
-#include "math_lib.h"
+#include "libbbmutils/bbmutils.h"
 #include "math_func.h"
 #include "params.h"
 
@@ -71,17 +71,18 @@ void find_angle_V(double *tetaV, double *dtetaV, VEC3D *axis, std::vector< std::
       V_samples++;
     }
   }
-  multiply_vec3d(1.0 / (float)V_samples, &accV_mean);
-  multiply_mat3d(1.0 / (float)V_samples, &accV_cov);
+  multiply_vec3d(&accV_mean, 1.0 / (float)V_samples);
+  multiply_mat3d(&accV_cov, 1.0 / (float)V_samples);
 
   std::cout << "Evaluating VERTICAL angle from " << V_samples << "/" << data.size() << " ( " << int(100 * V_samples / double(data.size())) << " %) samples" << std::endl;
 
   /* axis */
   VEC3D ortho, acc_n, z_axis;
-  z_axis = set_vec3d(0., 0., 1.);
-  acc_n = _normalize_vec3d(accV_mean);
-  ortho = prod_cross(acc_n, z_axis);
-  *axis = _normalize_vec3d(ortho);
+  set_vec3d(&z_axis, 0., 0., 1.);
+  memcpy(&acc_n, &accV_mean, sizeof accV_mean);
+  normalize_vec3d(&acc_n);
+  prod_cross_3d(&ortho, &acc_n, &z_axis);
+  *axis = normalize_vec3d(ortho);
 
   /* angle */
   double costetaV, sintetaV, errtetaV;
