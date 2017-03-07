@@ -29,12 +29,16 @@ all : $(LIBS)
 all : $(DEPS)
 all : $(EXES)
 
-openmp : OPT += -fopenmp 
+openmp : foldertree
+openmp : OPT_CXX += -fopenmp 
+openmp : OPT_CC += -fopenmp 
 openmp : $(LIBS)
 openmp : $(DEPS)
 openmp : $(EXES)
 
-debug : OPT = -O0 -g -std=c++0x 
+debug : foldertree
+debug : OPT_CXX = -O0 -g -std=c++0x 
+debug : OPT_CC = -O0 -g
 debug : $(LIBS)
 debug : $(DEPS)
 debug : $(EXES)

@@ -158,6 +158,11 @@ int main(int argc, char **argv) {
     exit(-4);
   }
 
+  if (file_tokens.size() != data.size()) {
+    cout << "WARNING: original record " << file_tokens.size() << ", used " << data.size() << " ( " << int(100.0*(double)data.size()/file_tokens.size()) << " % )" << endl;
+    cout << "WARNING: skipped " << file_tokens.size() - data.size() << " lines due to NaN presence." << endl;
+  }
+
   vector<double> me_ax_gz(index_shifts.size(), std::numeric_limits<double>::signaling_NaN());
   vector<double> me_ay_gz(index_shifts.size(), std::numeric_limits<double>::signaling_NaN());
   vector<double> e_ax(index_shifts.size(), std::numeric_limits<double>::signaling_NaN());

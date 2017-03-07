@@ -62,10 +62,23 @@ vector< vector<double> > tokens_to_double(vector< vector<string> > parsed_file) 
   vector< vector<double> > doubled_file;
 
   for (auto &i : parsed_file) {
+    bool skip_line = false;
     doubled_line.clear();
     doubled_line.resize(i.size());
-    for (size_t j = 0; j < i.size(); j++) doubled_line[j] = atof(i[j].c_str());
-    doubled_file.push_back(doubled_line);
+    for (size_t j = 0; j < i.size(); j++) {
+      try {
+        doubled_line[j] = stod(i[j]);
+      }
+      catch (...) {                     // to avoid line containing empty values
+        skip_line = true;
+        break;
+      }
+      if (isnan(doubled_line[j])) {     // to avoid line containing NaN values
+        skip_line = true;
+        break;
+      }
+    }
+    if (!skip_line) doubled_file.push_back(doubled_line);
   }
   return doubled_file;
 }
