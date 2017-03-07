@@ -22,8 +22,7 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <cmath>
-
+#include <cmath> 
 #include <boost/utility.hpp>
 #include <boost/algorithm/string.hpp>
 
@@ -73,7 +72,7 @@ vector< vector<double> > tokens_to_double(vector< vector<string> > parsed_file) 
         skip_line = true;
         break;
       }
-      if (isnan(doubled_line[j])) {     // to avoid line containing NaN values
+      if (std::isnan(doubled_line[j])) {     // to avoid line containing NaN values
         skip_line = true;
         break;
       }

@@ -23,11 +23,8 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 
 #include <iostream>
 #include <iomanip>
-#include <complex>
 #include <fstream>
 #include <vector>
-#include <cmath>
-#include <limits> 
 
 #include "io_lib.hpp"
 #include "libbbmutils/bbmutils.h"
