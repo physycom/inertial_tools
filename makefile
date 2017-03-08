@@ -36,6 +36,15 @@ openmp : $(LIBS)
 openmp : $(DEPS)
 openmp : $(EXES)
 
+mac-openmp : foldertree
+mac-openmp : CC = gcc-6 
+mac-openmp : CXX = g++-6 
+mac-openmp : OPT_CXX += -fopenmp 
+mac-openmp : OPT_CC += -fopenmp 
+mac-openmp : $(LIBS)
+mac-openmp : $(DEPS)
+mac-openmp : $(EXES)
+
 debug : foldertree
 debug : OPT_CXX = -O0 -g -std=c++0x 
 debug : OPT_CC = -O0 -g
