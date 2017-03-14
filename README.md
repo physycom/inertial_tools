@@ -11,7 +11,7 @@ author: "Fabbri, Sinigardi"
 </a>
 <a href="https://travis-ci.org/physycom/inertial_tools"> 
 <div class="image">
-<img src="https://travis-ci.org/physycom/inertial_tools.svg?branch=master" width="90" height="20" alt="Build Status"> 
+<img src="https://travis-ci.com/physycom/inertial_tools.svg?token=ujjUseBa9hYbKckXBkxJ&branch=master" width="90" height="20" alt="Build Status"> 
 </div>
 </a>
 
