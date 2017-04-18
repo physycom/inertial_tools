@@ -41,5 +41,5 @@ packages/*
 *.idb
 *.ilk
 *.tmp
-*.txt
-*.pdf
+bin/
+build/

@@ -34,7 +34,9 @@ enum bin_mode { DYNAMIC_BIN, FIXED_BIN };
 #include <limits>
 #include <algorithm>
 #include <limits>
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 #include "io_lib.hpp"
 
 using namespace std;
