@@ -82,7 +82,11 @@ The suite is composed of tools which match a specific analysis pattern/method an
 This suite has been developed by the Physics of the City laboratory, Physics and Astronomy Department, University of Bologna, as an internal support tool to help the consultancy activity within the official collaboration with UnipolSai.
 
 ## Technical notes
-The repository comes equipped with both a *makefile* and a *VS2015* solution. 
+**CMake**, **boost** and a **C++11** compatible compiler are required. To build the executable, clone the repo and then type  
+```
+mkdir build ; cd build ; cmake .. ; cmake --build . --target install
+```
+With CMake you can also deploy projects for the most common IDEs.  
 
 Every tool of the suite provides its own _synopsis_ when run on a terminal.
 
