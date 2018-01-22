@@ -1,45 +1,70 @@
-# Compiled Object files
+
+#VS Code
+.vs/
+.vscode/
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Mac desktop service store files
+.DS_Store
+
+# Object files
 *.slo
 *.lo
 *.o
+*.out
+*.ko
 *.obj
+*.elf
+*.exe
 
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
+# Libraries
 *.lib
-packages/*
+*.a
+*.la
+*.lai
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
 
 # Executables
 *.exe
 *.out
 *.app
+*.i*86
+*.x86_64
+*.hex
+
+
+# QtCreator
+*.autosave
+*.config
+*.creator
+*.creator.user
+*.opendb
 *.iobj
 *.ipdb
-*.pdb
-*.tlog
-*.log
-*.targets
 *.db
-*.opendb
-*.suo
-*.user
-*.idb
-*.ilk
-*.tmp
-bin/
-build/
+
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+x64/
+[Bb]uild*/
+bld/
+[Bb]in/
+[Oo]bj/
+
+cmake/*.h
+cmake/*.cpp

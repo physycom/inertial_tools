@@ -17,31 +17,28 @@ You should have received a copy of the GNU General Public License
 along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 ***************************************************************************/
 
-#ifndef _GNU_SOURCE
-#define _GNU_SOURCE
-#endif
-
-#include <iostream>
-#include <iomanip>
+#include <cmath>
 #include <complex>
 #include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <limits>
 #include <vector>
-#include <cmath>
-#include <limits> 
 
 #include "io_lib.hpp"
-#include "math_func.h"
 #include "libbbmutils/bbmutils.h"
+#include "math_func.h"
 #include "params.h"
 
-#define MAJOR_VERSION       2
-#define MINOR_VERSION       0
+#define MAJOR_VERSION 2
+#define MINOR_VERSION 0
 
-#define HORIZONTAL_MODE     'h'
-#define VERTICAL_MODE       'v'
-#define BOTH_MODE           'b'
+#define HORIZONTAL_MODE 'h'
+#define VERTICAL_MODE 'v'
+#define BOTH_MODE 'b'
 
-void usage(char * progname) {
+void usage(char* progname)
+{
   std::vector<std::string> tokens;
   boost::split(tokens, progname, boost::is_any_of("/\\"));
   std::cout << "Usage: " << tokens.back() << " alpha nx ny nz path/to/data/file" << std::endl;
@@ -51,8 +48,10 @@ void usage(char * progname) {
   exit(-3);
 }
 
-int main(int argc, char **argv) {
-  std::cout << "Data Rotator v" << MAJOR_VERSION << "." << MINOR_VERSION << std::endl << std::endl;
+int main(int argc, char** argv)
+{
+  std::cout << "Data Rotator v" << MAJOR_VERSION << "." << MINOR_VERSION << std::endl
+            << std::endl;
 
   std::string input_file;
   double alpha, nx, ny, nz;
@@ -63,28 +62,26 @@ int main(int argc, char **argv) {
       nx = std::stod(std::string(argv[2]));
       ny = std::stod(std::string(argv[3]));
       nz = std::stod(std::string(argv[4]));
-    }
-    catch (std::exception &e) {
+    } catch (std::exception& e) {
       std::cout << "EXCEPTION: " << e.what() << std::endl;
       usage(argv[0]);
     }
-  }
-  else {
+  } else {
     std::cout << "ERROR: Wrong command line parameters. Read usage and relaunch properly." << std::endl;
     usage(argv[0]);
   }
 
-  std::cout << "Rotating file : " << input_file << "\tAngle : " << alpha * RAD_TO_DEG 
-    << "\tAxis : ( " << nx << " , " << ny << " , " << nz << " ) " << std::endl;
+  std::cout << "Rotating file : " << input_file << "\tAngle : " << alpha * RAD_TO_DEG
+            << "\tAxis : ( " << nx << " , " << ny << " , " << nz << " ) " << std::endl;
 
-  std::vector< std::vector<std::string> > file_tokens = Read_from_file(input_file);
-  std::vector< std::vector<double> > data = tokens_to_double(file_tokens);
+  std::vector<std::vector<std::string>> file_tokens = Read_from_file(input_file);
+  std::vector<std::vector<double>> data = tokens_to_double(file_tokens);
 
   VEC3D axis;
   set_vec3d(&axis, nx, ny, nz);
   MAT3D rotation;
   make_rotation(&rotation, &axis, alpha);
-  std::vector< std::vector<double> > data_r = rotate_inertial(data, rotation);
+  std::vector<std::vector<double>> data_r = rotate_inertial(data, rotation);
   std::string outfile = input_file.substr(0, input_file.size() - 4) + "_rot.txt";
   dump_to_csv(data_r, outfile);
 

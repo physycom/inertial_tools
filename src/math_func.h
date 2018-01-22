@@ -17,13 +17,11 @@ You should have received a copy of the GNU General Public License
 along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 ***************************************************************************/
 
-#include <vector>
 #include "libbbmutils/bbmutils.h"
+#include <vector>
 
-std::vector<double> Integrate(std::vector<double> &x, std::vector<double> &f, double F0 = 0);
+std::vector<double> Integrate(std::vector<double>& x, std::vector<double>& f, double F0 = 0);
 
-std::vector< std::vector<double> > rotate_inertial(std::vector< std::vector<double> > data, MAT3D rotation);
+std::vector<std::vector<double>> rotate_inertial(std::vector<std::vector<double>> data, MAT3D rotation);
 
 std::vector<double> forward_derivative(std::vector<double> F, std::vector<double> x);
-
-

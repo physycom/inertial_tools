@@ -17,13 +17,9 @@ You should have received a copy of the GNU General Public License
 along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 ***************************************************************************/
 
-#ifndef _GNU_SOURCE
-#define _GNU_SOURCE
-#endif
-
-#include <iostream>
-#include <iomanip>
 #include <fstream>
+#include <iomanip>
+#include <iostream>
 #include <vector>
 
 #include "io_lib.hpp"
@@ -31,40 +27,50 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #include "math_func.h"
 #include "params.h"
 
-#include <boost/utility.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/utility.hpp>
 
-#define V_MIN              10.0                                 /* km/h */
-#define OMEGA_MIN          5.0                                  /* dps  */
-#define OMEGA_MAX          10.0                                 /* dps  */
-#define A_MAX              1.5                                  /* g    */
+#define V_MIN 10.0 /* km/h */
+#define OMEGA_MIN 5.0 /* dps  */
+#define OMEGA_MAX 10.0 /* dps  */
+#define A_MAX 1.5 /* g    */
 
 //////// CALIBRATION ALGORITHM
-void find_angle_V(double *tetaV, double *dtetaV, VEC3D *axis, std::vector< std::vector<double> > data) {
+void find_angle_V(double* tetaV, double* dtetaV, VEC3D* axis, std::vector<std::vector<double>> data)
+{
   int V_samples = 0;
-  VEC3D accV_mean; memset(&accV_mean, 0, sizeof(VEC3D));
-  MAT3D accV_cov; memset(&accV_cov, 0, sizeof(MAT3D));
+  VEC3D accV_mean;
+  memset(&accV_mean, 0, sizeof(VEC3D));
+  MAT3D accV_cov;
+  memset(&accV_cov, 0, sizeof(MAT3D));
 
   // filter data
   for (size_t i = 0; i < data.size(); i++) {
     double ax = data[i][AX_INDEX],
-      ay = data[i][AY_INDEX],
-      az = data[i][AZ_INDEX],
-      gx = data[i][GX_INDEX],
-      gy = data[i][GY_INDEX],
-      gz = data[i][GZ_INDEX];
+           ay = data[i][AY_INDEX],
+           az = data[i][AZ_INDEX],
+           gx = data[i][GX_INDEX],
+           gy = data[i][GY_INDEX],
+           gz = data[i][GZ_INDEX];
 
-    double a_squared = ax*ax + ay*ay + az*az;
-    double g_squared = gx*gx + gy*gy + gz*gz;
+    double a_squared = ax * ax + ay * ay + az * az;
+    double g_squared = gx * gx + gy * gy + gz * gz;
 
-
-    if (a_squared < A_MAX*A_MAX && g_squared < OMEGA_MAX*OMEGA_MAX)             /* stationary regime  */
+    if (a_squared < A_MAX * A_MAX && g_squared < OMEGA_MAX * OMEGA_MAX) /* stationary regime  */
     {
       /* data stored for vertical angle */
-      accV_mean.x += (float)ax;    accV_mean.y += (float)ay;    accV_mean.z += (float)az;
-      accV_cov.xx += float(ax*ax); accV_cov.xy += float(ax*ay); accV_cov.xz += float(ax*az);
-      accV_cov.yx += float(ay*ax); accV_cov.yy += float(ay*ay); accV_cov.yz += float(ay*az);
-      accV_cov.zx += float(az*ax); accV_cov.zy += float(az*ay); accV_cov.zz += float(az*az);
+      accV_mean.x += (float)ax;
+      accV_mean.y += (float)ay;
+      accV_mean.z += (float)az;
+      accV_cov.xx += float(ax * ax);
+      accV_cov.xy += float(ax * ay);
+      accV_cov.xz += float(ax * az);
+      accV_cov.yx += float(ay * ax);
+      accV_cov.yy += float(ay * ay);
+      accV_cov.yz += float(ay * az);
+      accV_cov.zx += float(az * ax);
+      accV_cov.zy += float(az * ay);
+      accV_cov.zz += float(az * az);
       V_samples++;
     }
   }
@@ -87,30 +93,34 @@ void find_angle_V(double *tetaV, double *dtetaV, VEC3D *axis, std::vector< std::
   double costetaV, sintetaV, errtetaV;
   costetaV = prod_dot_3d(&acc_n, &z_axis);
   sintetaV = ortho.mod;
-  errtetaV = 1 - costetaV*costetaV - sintetaV*sintetaV;
+  errtetaV = 1 - costetaV * costetaV - sintetaV * sintetaV;
   *tetaV = atan2(sintetaV, costetaV);
 
   /* error */
   double x, y, z, dx, dy, dz;
-  x = accV_mean.x; y = accV_mean.y; z = accV_mean.z;
-  dx = sqrt(accV_cov.xx - x*x); dy = sqrt(accV_cov.yy - y*y); dz = sqrt(accV_cov.zz - z*z);
+  x = accV_mean.x;
+  y = accV_mean.y;
+  z = accV_mean.z;
+  dx = sqrt(accV_cov.xx - x * x);
+  dy = sqrt(accV_cov.yy - y * y);
+  dz = sqrt(accV_cov.zz - z * z);
 
   double c, dc, s, ds;
 
   c = costetaV;
   s = sintetaV;
 
-  dc = (z*x*dx)*(z*x*dx) + (z*y*dy)*(z*y*dy) + (x*x + y*y)*(x*x + y*y)*dz*dz;
+  dc = (z * x * dx) * (z * x * dx) + (z * y * dy) * (z * y * dy) + (x * x + y * y) * (x * x + y * y) * dz * dz;
   dc = sqrt(dc);
-  dc /= (sqrt(x*x + y*y + z*z)*sqrt(x*x + y*y + z*z)*sqrt(x*x + y*y + z*z));
+  dc /= (sqrt(x * x + y * y + z * z) * sqrt(x * x + y * y + z * z) * sqrt(x * x + y * y + z * z));
 
-  ds = (z*z*x*dx)*(z*z*x*dx) / ((x*x + y*y)*(x*x + y*y)) + (z*z*y*dy)*(z*z*y*dy) / ((x*x + y*y)*(x*x + y*y)) + z*z*dz*dz;
+  ds = (z * z * x * dx) * (z * z * x * dx) / ((x * x + y * y) * (x * x + y * y)) + (z * z * y * dy) * (z * z * y * dy) / ((x * x + y * y) * (x * x + y * y)) + z * z * dz * dz;
   ds = sqrt(ds);
-  ds *= sqrt((x*x + y*y) / ((x*x + y*y + z*z)*(x*x + y*y + z*z)*(x*x + y*y + z*z)));
+  ds *= sqrt((x * x + y * y) / ((x * x + y * y + z * z) * (x * x + y * y + z * z) * (x * x + y * y + z * z)));
 
-  *dtetaV = s*s*dc*dc + c*c*ds*ds;
+  *dtetaV = s * s * dc * dc + c * c * ds * ds;
   *dtetaV = sqrt(*dtetaV);
-  *dtetaV /= (s*s + c*c);
+  *dtetaV /= (s * s + c * c);
 
   std::cout << "Vertical angle (deg) " << *tetaV * RAD_TO_DEG << " +- " << *dtetaV * RAD_TO_DEG << std::endl;
   std::cout << "Axis ( " << axis->x << " , " << axis->y << " , " << axis->z << " ) " << std::endl;
@@ -118,31 +128,44 @@ void find_angle_V(double *tetaV, double *dtetaV, VEC3D *axis, std::vector< std::
   return;
 }
 
-void find_angle_H(double *tetaH, double *dtetaH, std::vector< std::vector<double> > data) {
+void find_angle_H(double* tetaH, double* dtetaH, std::vector<std::vector<double>> data)
+{
   int H_samples = 0;
-  VEC3D accH_mean; memset(&accH_mean, 0, sizeof(VEC3D));
-  MAT3D accH_cov; memset(&accH_cov, 0, sizeof(MAT3D));
+  VEC3D accH_mean;
+  memset(&accH_mean, 0, sizeof(VEC3D));
+  MAT3D accH_cov;
+  memset(&accH_cov, 0, sizeof(MAT3D));
 
   // filter data
   for (size_t i = 0; i < data.size(); i++) {
     double v = data[i][SPEED_INDEX],
-      ax = data[i][AX_INDEX],
-      ay = data[i][AY_INDEX],
-      az = data[i][AZ_INDEX],
-      gx = data[i][GX_INDEX],
-      gy = data[i][GY_INDEX],
-      gz = data[i][GZ_INDEX];
+           ax = data[i][AX_INDEX],
+           ay = data[i][AY_INDEX],
+           az = data[i][AZ_INDEX],
+           gx = data[i][GX_INDEX],
+           gy = data[i][GY_INDEX],
+           gz = data[i][GZ_INDEX];
 
-    if (v > V_MIN && gz > OMEGA_MIN)                                            /* fast driving regime */
+    if (v > V_MIN && gz > OMEGA_MIN) /* fast driving regime */
     {
       double sign = (gz > 0) - (gz < 0);
-      ax = sign*ax; ay = sign*ay; az = az;
+      ax = sign * ax;
+      ay = sign * ay;
+      az = az;
 
       /* data stored for horizontal angle  */
-      accH_mean.x += ax;    accH_mean.y += ay;    accH_mean.z += az;
-      accH_cov.xx += ax*ax; accH_cov.xy += ax*ay; accH_cov.xz += ax*az;
-      accH_cov.yx += ay*ax; accH_cov.yy += ay*ay; accH_cov.yz += ay*az;
-      accH_cov.zx += az*ax; accH_cov.zy += az*ay; accH_cov.zz += az*az;
+      accH_mean.x += ax;
+      accH_mean.y += ay;
+      accH_mean.z += az;
+      accH_cov.xx += ax * ax;
+      accH_cov.xy += ax * ay;
+      accH_cov.xz += ax * az;
+      accH_cov.yx += ay * ax;
+      accH_cov.yy += ay * ay;
+      accH_cov.yz += ay * az;
+      accH_cov.zx += az * ax;
+      accH_cov.zy += az * ay;
+      accH_cov.zz += az * az;
 
       H_samples++;
     }
@@ -154,26 +177,30 @@ void find_angle_H(double *tetaH, double *dtetaH, std::vector< std::vector<double
 
   /* angle */
   double costetaH, sintetaH, errtetaH, x, y, dx, dy;
-  x = accH_mean.x; y = accH_mean.y;
-  costetaH = y / sqrt(x*x + y*y);     /* + < v , y > */
-  sintetaH = x / sqrt(x*x + y*y);    /* - < v , x > */
-  errtetaH = 1 - costetaH*costetaH - sintetaH*sintetaH;
+  x = accH_mean.x;
+  y = accH_mean.y;
+  costetaH = y / sqrt(x * x + y * y); /* + < v , y > */
+  sintetaH = x / sqrt(x * x + y * y); /* - < v , x > */
+  errtetaH = 1 - costetaH * costetaH - sintetaH * sintetaH;
   *tetaH = atan2(costetaH, sintetaH);
-  if (*tetaH < 0) *tetaH += 2 * M_PI;
+  if (*tetaH < 0)
+    *tetaH += 2 * M_PI;
 
   /* error */
   double nx, dnx, ny, dny, axy, daxy, r, dr;
-  dx = sqrt(accH_cov.xx - x*x); dy = sqrt(accH_cov.yy - y*y);
-  x = fabs(x); y = fabs(y);
-  axy = sqrt(x*x + y*y);
-  daxy = (x*dx + y*dy) / axy;
+  dx = sqrt(accH_cov.xx - x * x);
+  dy = sqrt(accH_cov.yy - y * y);
+  x = fabs(x);
+  y = fabs(y);
+  axy = sqrt(x * x + y * y);
+  daxy = (x * dx + y * dy) / axy;
   nx = x / axy;
-  dnx = dx / axy + x / axy / axy*daxy;
+  dnx = dx / axy + x / axy / axy * daxy;
   ny = y / axy;
-  dny = dy / axy + y / axy / axy*daxy;
+  dny = dy / axy + y / axy / axy * daxy;
   r = nx / ny;
-  dr = dnx / ny + nx / ny / ny*dny;
-  *dtetaH = dr / (1 + r*r);
+  dr = dnx / ny + nx / ny / ny * dny;
+  *dtetaH = dr / (1 + r * r);
 
   /* output */
   std::cout << "Horizontal angle (deg) " << *tetaH * RAD_TO_DEG << " +- " << *dtetaH * RAD_TO_DEG << std::endl;
@@ -182,15 +209,15 @@ void find_angle_H(double *tetaH, double *dtetaH, std::vector< std::vector<double
 }
 
 //////// MAIN
-#define MAJOR_VERSION       1
-#define MINOR_VERSION       1
+#define MAJOR_VERSION 1
+#define MINOR_VERSION 1
 
-#define HORIZONTAL_MODE     'h'
-#define VERTICAL_MODE       'v'
-#define BOTH_MODE           'b'
+#define HORIZONTAL_MODE 'h'
+#define VERTICAL_MODE 'v'
+#define BOTH_MODE 'b'
 
-
-void usage(char * progname) {
+void usage(char* progname)
+{
   std::vector<std::string> tokens;
   boost::split(tokens, progname, boost::is_any_of("/\\"));
   std::cout << "Usage: " << tokens.back() << " -[h/v/b] path/to/data/file " << std::endl;
@@ -201,24 +228,25 @@ void usage(char * progname) {
   exit(-3);
 }
 
-int main(int argc, char **argv) {
-  std::cout << "Calibrator v" << MAJOR_VERSION << "." << MINOR_VERSION << std::endl << std::endl;
+int main(int argc, char** argv)
+{
+  std::cout << "Calibrator v" << MAJOR_VERSION << "." << MINOR_VERSION << std::endl
+            << std::endl;
 
   std::string input_file;
   char mode;
   if (argc == 3) {
     mode = argv[1][1];
     input_file = argv[2];
-  }
-  else {
+  } else {
     std::cout << "ERROR: Wrong command line parameters. Read usage and relaunch properly." << std::endl;
     usage(argv[0]);
   }
 
   std::cout << "Calibrating from file : " << input_file << "\tMode : " << mode << std::endl;
 
-  std::vector< std::vector<std::string> > file_tokens = Read_from_file(input_file);
-  std::vector< std::vector<double> > data = tokens_to_double(file_tokens);
+  std::vector<std::vector<std::string>> file_tokens = Read_from_file(input_file);
+  std::vector<std::vector<double>> data = tokens_to_double(file_tokens);
 
   if (mode == HORIZONTAL_MODE) {
     double tetaH = 0, dtetaH = 0;
@@ -227,24 +255,21 @@ int main(int argc, char **argv) {
     find_angle_H(&tetaH, &dtetaH, data);
     MAT3D rotation;
     make_rotation(&rotation, &z_axis, tetaH);
-    std::vector< std::vector<double> > data_r = rotate_inertial(data, rotation);
+    std::vector<std::vector<double>> data_r = rotate_inertial(data, rotation);
     std::string outfile = input_file.substr(0, input_file.size() - 4) + "_rotH.txt";
     dump_to_csv(data_r, outfile);
-  }
-  else if (mode == VERTICAL_MODE) {
+  } else if (mode == VERTICAL_MODE) {
     double tetaV = 0, dtetaV = 0;
     VEC3D axis;
     find_angle_V(&tetaV, &dtetaV, &axis, data);
     MAT3D rotation;
     make_rotation(&rotation, &axis, tetaV);
-    std::vector< std::vector<double> > data_r = rotate_inertial(data, rotation);
+    std::vector<std::vector<double>> data_r = rotate_inertial(data, rotation);
     std::string outfile = input_file.substr(0, input_file.size() - 4) + "_rotV.txt";
     dump_to_csv(data_r, outfile);
-  }
-  else if (mode == BOTH_MODE) {
+  } else if (mode == BOTH_MODE) {
     // coming soon
-  }
-  else {
+  } else {
     std::cout << "Mode : " << mode << " unknown" << std::endl;
     usage(argv[0]);
   }

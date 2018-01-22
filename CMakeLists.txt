@@ -1,21 +1,20 @@
 cmake_minimum_required (VERSION 3.1)
-project (get_nominatim_info)
+project (inertial_tools)
 set (CMAKE_CXX_STANDARD 11)
 
 find_package(Boost REQUIRED)
-set(LIBBBMUTILS_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src)
-set(JSONCONS_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/jsoncons/src)
-if(MSVC)
-  add_definitions(-D_SCL_SECURE_NO_WARNINGS)
-  add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-endif()
+
 find_package(OpenMP)
 if (OPENMP_FOUND)
     set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
 
-include_directories(${JSONCONS_INCLUDE_DIR} ${LIBBBMUTILS_INCLUDE_DIR})
+set(LIBBBMUTILS_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src)
+set(JSONCONS_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/jsoncons/include)
+
+include_directories(${JSONCONS_INCLUDE_DIR} ${LIBBBMUTILS_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
+
 add_library(math_func ${CMAKE_SOURCE_DIR}/src/math_func.cpp)
 add_library(bbmutils ${CMAKE_SOURCE_DIR}/src/libbbmutils/src/bbmutils.c)
 

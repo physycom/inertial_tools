@@ -8,17 +8,6 @@ compiler:
     - gcc
     - clang
 
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    - sourceline: 'ppa:boost-latest/ppa'
-    packages:
-    - gcc-5
-    - g++-5
-    - clang
-    - libboost1.55-all-dev
-
 matrix:
     exclude:
     - os: osx
@@ -27,20 +16,9 @@ matrix:
       compiler: clang
 
 before_install:
-  # OSX Setup 
-  - if [[ "$TRAVIS_OS_NAME" == "osx"   ]]; then brew update                                                                               ;fi
 
 install:
-  # Linux Setup 
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then wget --no-check-certificate https://cmake.org/files/v3.8/cmake-3.8.0-Linux-x86_64.tar.gz  ;fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then tar -xzf cmake-3.8.0-Linux-x86_64.tar.gz                                                  ;fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5" ;fi                             ;fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export PATH=$PWD/cmake-3.8.0-Linux-x86_64/bin:$PATH                                       ;fi 
-  # OSX Setup 
-  - if [[ "$TRAVIS_OS_NAME" == "osx"   ]]; then wget --no-check-certificate https://cmake.org/files/v3.8/cmake-3.8.0-Darwin-x86_64.tar.gz ;fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx"   ]]; then tar -xzf cmake-3.8.0-Darwin-x86_64.tar.gz                                                 ;fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx"   ]]; then export PATH=$PWD/cmake-3.8.0-Darwin-x86_64/CMake.app/Contents/bin:$PATH                   ;fi 
 
 script:
-  - mkdir build_gcc && cd build_gcc && cmake .. && cmake --build . --target install && cd ..
+  - mkdir build && cd build && cmake .. && cmake --build . --target install && cd ..
 

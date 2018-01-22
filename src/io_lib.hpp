@@ -17,84 +17,87 @@ You should have received a copy of the GNU General Public License
 along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 ***************************************************************************/
 
-
-
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <cmath> 
-#include <boost/utility.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/utility.hpp>
+#include <cmath>
+#include <fstream>
+#include <iostream>
+#include <vector>
 
-using namespace std;
-using namespace boost::algorithm;
-
-bool Belongs_to_string(char c, string s) {
+bool Belongs_to_string(char c, std::string s)
+{
   for (size_t i = 0; i < s.size(); i++) {
-    if (c == s.at(i)) return true;
+    if (c == s.at(i))
+      return true;
   }
   return false;
 }
 
-vector< vector<string> > Read_from_file(string file_name) {
-  string line; vector<string> tokens; vector< vector<string> > file_tokens;
-  ifstream data_file(file_name);
+std::vector<std::vector<std::string>> Read_from_file(std::string file_name)
+{
+  std::string line;
+  std::vector<std::string> tokens;
+  std::vector<std::vector<std::string>> file_tokens;
+  std::ifstream data_file(file_name);
   if (!data_file) {
-    cerr << "ERROR: file " << file_name << " could not be opened" << endl;
+    std::cerr << "ERROR: file " << file_name << " could not be opened" << std::endl;
     exit(-1);
   }
   while (!data_file.eof()) {
     line.clear();
     tokens.clear();
-    getline(data_file, line);
+    std::getline(data_file, line);
     if (line.size() > 0) {
-      split(tokens, line, is_any_of("\t"));
-      if (tokens[0].at(0) == '#') continue;
-      else file_tokens.push_back(tokens);
+      boost::algorithm::split(tokens, line, boost::algorithm::is_any_of("\t"));
+      if (tokens[0].at(0) == '#')
+        continue;
+      else
+        file_tokens.push_back(tokens);
     }
   }
   return file_tokens;
 }
 
-vector< vector<double> > tokens_to_double(vector< vector<string> > parsed_file) {
-  vector<double> doubled_line;
-  vector< vector<double> > doubled_file;
+std::vector<std::vector<double>> tokens_to_double(std::vector<std::vector<std::string>> parsed_file)
+{
+  std::vector<double> doubled_line;
+  std::vector<std::vector<double>> doubled_file;
 
-  for (auto &i : parsed_file) {
+  for (auto& i : parsed_file) {
     bool skip_line = false;
     doubled_line.clear();
     doubled_line.resize(i.size());
     for (size_t j = 0; j < i.size(); j++) {
       try {
         doubled_line[j] = stod(i[j]);
-      }
-      catch (...) {                     // to avoid line containing empty values
+      } catch (...) { // to avoid line containing empty values
         skip_line = true;
         break;
       }
-      if (std::isnan(doubled_line[j])) {     // to avoid line containing NaN values
+      if (std::isnan(doubled_line[j])) { // to avoid line containing NaN values
         skip_line = true;
         break;
       }
     }
-    if (!skip_line) doubled_file.push_back(doubled_line);
+    if (!skip_line)
+      doubled_file.push_back(doubled_line);
   }
   return doubled_file;
 }
 
-
-void dump_to_csv(vector< vector<double> > data, string filename) {
-  ofstream output(filename);
+void dump_to_csv(std::vector<std::vector<double>> data, std::string filename)
+{
+  std::ofstream output(filename);
   if (!output) {
-    cerr << "FAILED: file " << filename << " could not be opened" << endl;
+    std::cerr << "FAILED: file " << filename << " could not be opened" << std::endl;
     exit(-2);
   }
 
   for (size_t i = 0; i < data.size(); i++) {
     for (size_t j = 0; j < data[i].size(); j++) {
-      output << fixed << setprecision(3) << setw(7) << data[i][j] << '\t';
+      output << std::fixed << std::setprecision(3) << std::setw(7) << data[i][j] << '\t';
     }
-    output << endl;
+    output << std::endl;
   }
   output.close();
 

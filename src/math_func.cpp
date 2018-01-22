@@ -17,41 +17,47 @@ You should have received a copy of the GNU General Public License
 along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 ***************************************************************************/
 
-#include <vector>
 #include <cstddef>
+#include <vector>
 
-#include "math_func.h"
 #include "libbbmutils/bbmutils.h"
+#include "math_func.h"
 #include "params.h"
 
-std::vector<double> Integrate(std::vector<double> &x, std::vector<double> &f, double F0) {
+std::vector<double> Integrate(std::vector<double>& x, std::vector<double>& f, double F0)
+{
   std::vector<double> F;
   F.push_back(F0);
   double dx, df, sum = F[0];
   for (size_t i = 1; i < x.size(); i++) {
     dx = x[i] - x[i - 1];
-    df = .5*(f[i] + f[i - 1]);
-    sum += dx*df;
+    df = .5 * (f[i] + f[i - 1]);
+    sum += dx * df;
     F.push_back(sum);
   }
   return F;
 }
 
-std::vector< std::vector<double> > rotate_inertial(std::vector< std::vector<double> > data, MAT3D rotation) {
-  std::vector< std::vector<double> > data_r;
+std::vector<std::vector<double>> rotate_inertial(std::vector<std::vector<double>> data, MAT3D rotation)
+{
+  std::vector<std::vector<double>> data_r;
 
   for (size_t i = 0; i < data.size(); i++) {
     std::vector<double> row;
-    row.push_back(data[i][0]);   // timestamp
-    row.push_back(data[i][1]);   // speed
+    row.push_back(data[i][0]); // timestamp
+    row.push_back(data[i][1]); // speed
 
     VEC6D ag;
     set_vec6d(&ag, data[i][AX_INDEX], data[i][AY_INDEX], data[i][AZ_INDEX],
-      data[i][GX_INDEX], data[i][GY_INDEX], data[i][GZ_INDEX]);
+        data[i][GX_INDEX], data[i][GY_INDEX], data[i][GZ_INDEX]);
     VEC6D ag_r;
     rotate_vec6d(&ag_r, &rotation, &ag);
-    row.push_back(ag_r.a.x); row.push_back(ag_r.a.y); row.push_back(ag_r.a.z);
-    row.push_back(ag_r.g.x); row.push_back(ag_r.g.y); row.push_back(ag_r.g.z);
+    row.push_back(ag_r.a.x);
+    row.push_back(ag_r.a.y);
+    row.push_back(ag_r.a.z);
+    row.push_back(ag_r.g.x);
+    row.push_back(ag_r.g.y);
+    row.push_back(ag_r.g.z);
 
     for (size_t j = 8; j < data[i].size(); j++) {
       row.push_back(data[i][j]);
@@ -62,17 +68,15 @@ std::vector< std::vector<double> > rotate_inertial(std::vector< std::vector<doub
   return data_r;
 }
 
-std::vector<double> forward_derivative(std::vector<double> F, std::vector<double> x) {
+std::vector<double> forward_derivative(std::vector<double> F, std::vector<double> x)
+{
   std::vector<double> f;
-  for (size_t i = 0; i<F.size(); i++) {
+  for (size_t i = 0; i < F.size(); i++) {
     if (i == (F.size() - 1)) {
       f.push_back(f[i - 1]);
-    }
-    else {
+    } else {
       f.push_back((F[i + 1] - F[i]) / (x[i + 1] - x[i]));
     }
   }
   return f;
 }
-
-

@@ -17,24 +17,20 @@ You should have received a copy of the GNU General Public License
 along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 ***************************************************************************/
 
-
-#ifndef _GNU_SOURCE
-#define _GNU_SOURCE
-#endif
 #include <cmath>
 
 // Physycom INERTIAL layout
-#define TIMESTAMP_INDEX     0
-#define SPEED_INDEX         1
-#define AX_INDEX            2
-#define AY_INDEX            3
-#define AZ_INDEX            4
-#define GX_INDEX            5
-#define GY_INDEX            6
-#define GZ_INDEX            7
-#define AMOD_INDEX          8
-#define TIMES_REL_INDEX     9
+#define TIMESTAMP_INDEX 0
+#define SPEED_INDEX 1
+#define AX_INDEX 2
+#define AY_INDEX 3
+#define AZ_INDEX 4
+#define GX_INDEX 5
+#define GY_INDEX 6
+#define GZ_INDEX 7
+#define AMOD_INDEX 8
+#define TIMES_REL_INDEX 9
 
 // conversion
-#define RAD_TO_DEG          ( 180. / M_PI )
-#define GRAV                9.81
+#define RAD_TO_DEG (180. / M_PI)
+#define GRAV 9.81

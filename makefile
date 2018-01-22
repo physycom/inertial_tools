@@ -63,7 +63,7 @@ $(OBJ_FOLDER)/bbmutils.o: $(SRC_FOLDER)/libbbmutils/src/bbmutils.c
 	$(CC) $(OPT_CC) -I$(SRC_FOLDER) -c -o $@ $<
 
 $(EXE_FOLDER)/%.exe: $(SRC_FOLDER)/%.cpp
-	$(CXX) $(OPT_CXX) -I$(SRC_FOLDER)/jsoncons/src -o $@ $(DEPS) $(LIBS) $< 
+	$(CXX) $(OPT_CXX) -I$(SRC_FOLDER)/jsoncons/include -o $@ $(DEPS) $(LIBS) $< 
 
 clean:
 	rm -f $(DEPS)
