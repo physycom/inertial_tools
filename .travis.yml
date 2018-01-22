@@ -8,6 +8,11 @@ compiler:
     - gcc
     - clang
 
+addons:
+  apt:
+    packages:
+    - libboost-all-dev
+
 matrix:
     exclude:
     - os: osx
