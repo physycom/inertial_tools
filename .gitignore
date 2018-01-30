@@ -65,3 +65,4 @@ x64/
 bld/
 [Bb]in/
 [Oo]bj/
+*.pdf

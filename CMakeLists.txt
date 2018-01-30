@@ -17,7 +17,7 @@ endif()
 set(LIBBBMUTILS_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src)
 set(JSONCONS_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/jsoncons/include)
 
-include_directories(${JSONCONS_INCLUDE_DIR} ${LIBBBMUTILS_INCLUDE_DIR})
+include_directories(${JSONCONS_INCLUDE_DIR} ${LIBBBMUTILS_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
 add_library(math_func ${CMAKE_SOURCE_DIR}/src/math_func.cpp)
 add_library(bbmutils ${CMAKE_SOURCE_DIR}/src/libbbmutils/src/bbmutils.c)
 
