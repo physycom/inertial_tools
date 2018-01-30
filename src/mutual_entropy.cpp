@@ -336,7 +336,7 @@ int main(int argc, char** argv)
     if (bin_pop[i] == bin_pop[i])
       results << index_shifts[i] << "\t" << e_ax[i] << "\t" << e_ay[i] << "\t" << e_gz[i] << "\t" << me_ax_gz[i] << "\t" << me_ay_gz[i] << "\t" << bin_pop[i] << std::endl;
     else
-      continue; // skip results still initialized to NaN (meaning they were not calculated in the algoritm)
+      continue; // skip results still initialized to NaN (meaning they were not calculated in the algorithm)
   }
   results.close();
 
@@ -344,7 +344,8 @@ int main(int argc, char** argv)
   gnuplot << R"(#!/gnuplot
 FILE_IN=')"
           << results_filename << R"('
-FILE_OUT=')" << plot_filename << R"('
+FILE_OUT=')"
+          << plot_filename << R"('
 set terminal pngcairo dashed size 1280,720 enhanced font 'Verdana,10'
 set output FILE_OUT
 # Styles
@@ -357,7 +358,8 @@ set style line 102 lc rgb '#d6d7d9' lt 1 lw 1      # gray
 # Grid
 set grid xtics ytics back ls 102
 # Titles
-set title 'Mutual Entropy: )" << escaped_filename << R"('
+set title 'Mutual Entropy: )"
+          << escaped_filename << R"('
 set xlabel 'Index Shift'
 set ylabel 'Entropy'
 set y2label 'Bin Population'

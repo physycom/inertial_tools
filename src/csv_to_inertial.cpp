@@ -23,6 +23,7 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <string>
 #include <vector>
 
 #include "io_lib.hpp"
@@ -33,17 +34,17 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 
 void usage(char* progname)
 {
-  vector<string> tokens;
+  std::vector<std::string> tokens;
   boost::split(tokens, progname, boost::is_any_of("/\\"));
-  cout << "Usage: " << tokens.back() << " -i input.csv -o inertial.txt" << endl;
+  std::cout << "Usage: " << tokens.back() << " -i input.csv -o inertial.txt" << std::endl;
 }
 
 int main(int argc, char** argv)
 {
-  cout << "CSV to Inertial v" << MAJOR_VERSION << "." << MINOR_VERSION << endl
-       << endl;
+  std::cout << "CSV to Inertial v" << MAJOR_VERSION << "." << MINOR_VERSION << std::endl
+            << std::endl;
 
-  string input_name, output_name("");
+  std::string input_name, output_name("");
   if (argc > 2) { /* Parse arguments, if there are arguments supplied */
     for (int i = 1; i < argc; i++) {
       if ((argv[i][0] == '-') || (argv[i][0] == '/')) { // switches or options...
@@ -55,25 +56,25 @@ int main(int argc, char** argv)
           output_name = argv[++i];
           break;
         default: // no match...
-          cerr << "ERROR: Flag \"" << argv[i] << "\" not recognized. Quitting..." << endl;
+          std::cerr << "ERROR: Flag \"" << argv[i] << "\" not recognized. Quitting..." << std::endl;
           usage(argv[0]);
           exit(1);
         }
       } else {
-        cerr << "ERROR: Flag \"" << argv[i] << "\" not recognized. Quitting..." << endl;
+        std::cerr << "ERROR: Flag \"" << argv[i] << "\" not recognized. Quitting..." << std::endl;
         usage(argv[0]);
         exit(2);
       }
     }
   } else {
-    cerr << "ERROR: No flags specified. Read usage and relaunch properly." << endl;
+    std::cerr << "ERROR: No flags specified. Read usage and relaunch properly." << std::endl;
     usage(argv[0]);
     exit(3);
   }
 
   // Safety and improvements in file names
   if (input_name == "") {
-    cerr << "ERROR: No input file specified. Read usage and relaunch properly." << endl;
+    std::cerr << "ERROR: No input file specified. Read usage and relaunch properly." << std::endl;
     usage(argv[0]);
     exit(4);
   } else if (input_name.substr(0, 2) == "./")
@@ -82,15 +83,15 @@ int main(int argc, char** argv)
     output_name = "inertial.txt";
 
   // Courtesy cout
-  cout << "Input CSV       : " << input_name << endl;
-  cout << "Output inertial : " << output_name << endl;
+  std::cout << "Input CSV       : " << input_name << std::endl;
+  std::cout << "Output inertial : " << output_name << std::endl;
 
   // Parsing input
   double _ax, _ay, _az;
-  vector<vector<double>> acc;
-  ifstream input(input_name);
+  std::vector<std::vector<double>> acc;
+  std::ifstream input(input_name);
   if (!input) {
-    cerr << "ERROR: Unable to open " << input_name << ". Quitting..." << endl;
+    std::cerr << "ERROR: Unable to open " << input_name << ". Quitting..." << std::endl;
     exit(5);
   }
   while (input >> _ax >> _ay >> _az) { // NO SAFETY because mattia says so
@@ -98,9 +99,9 @@ int main(int argc, char** argv)
   }
   input.close();
 
-  ofstream output(output_name);
+  std::ofstream output(output_name);
   if (!output) {
-    cerr << "ERROR: Unable to create " << output_name << ". Quitting..." << endl;
+    std::cerr << "ERROR: Unable to create " << output_name << ". Quitting..." << std::endl;
     exit(6);
   }
   output << "#  timestamp # speed #     ax #     ay #     az #     gx #      gy #     gz #   |a| #  timestamp_rel #" << std::endl;

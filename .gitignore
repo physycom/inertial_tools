@@ -65,6 +65,3 @@ x64/
 bld/
 [Bb]in/
 [Oo]bj/
-
-cmake/*.h
-cmake/*.cpp

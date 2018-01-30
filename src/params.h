@@ -28,9 +28,13 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #define GX_INDEX 5
 #define GY_INDEX 6
 #define GZ_INDEX 7
-#define AMOD_INDEX 8
+#define A_MOD_INDEX 8
 #define TIMES_REL_INDEX 9
 
 // conversion
 #define RAD_TO_DEG (180. / M_PI)
 #define GRAV 9.81
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846264338327950
+#endif

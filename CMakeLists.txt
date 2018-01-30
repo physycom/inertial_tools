@@ -2,19 +2,22 @@ cmake_minimum_required (VERSION 3.1)
 project (inertial_tools)
 set (CMAKE_CXX_STANDARD 11)
 
-find_package(Boost REQUIRED)
+if(VCPKG_CHAINLOAD_TOOLCHAIN_FILE)
+    include("${VCPKG_CHAINLOAD_TOOLCHAIN_FILE}")
+endif()
 
+find_package(Boost REQUIRED)
 find_package(OpenMP)
 if (OPENMP_FOUND)
     set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
 
+
 set(LIBBBMUTILS_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src)
 set(JSONCONS_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/jsoncons/include)
 
-include_directories(${JSONCONS_INCLUDE_DIR} ${LIBBBMUTILS_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
-
+include_directories(${JSONCONS_INCLUDE_DIR} ${LIBBBMUTILS_INCLUDE_DIR})
 add_library(math_func ${CMAKE_SOURCE_DIR}/src/math_func.cpp)
 add_library(bbmutils ${CMAKE_SOURCE_DIR}/src/libbbmutils/src/bbmutils.c)
 
@@ -37,5 +40,3 @@ target_link_libraries(data_rotator math_func bbmutils)
 target_link_libraries(inertial_stats math_func bbmutils)
 target_link_libraries(mutual_entropy math_func bbmutils)
 target_link_libraries(speed_compare math_func bbmutils)
-
-install (TARGETS data_calibrator data_filter data_gen data_purge data_reco data_rotator inertial_stats mutual_entropy speed_compare DESTINATION ${CMAKE_SOURCE_DIR}/bin)

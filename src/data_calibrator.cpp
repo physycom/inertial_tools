@@ -30,13 +30,20 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #include <boost/algorithm/string.hpp>
 #include <boost/utility.hpp>
 
+#define MAJOR_VERSION 1
+#define MINOR_VERSION 2
+
+#define HORIZONTAL_MODE 'h'
+#define VERTICAL_MODE 'v'
+#define BOTH_MODE 'b'
+
 #define V_MIN 10.0 /* km/h */
 #define OMEGA_MIN 5.0 /* dps  */
 #define OMEGA_MAX 10.0 /* dps  */
 #define A_MAX 1.5 /* g    */
 
 //////// CALIBRATION ALGORITHM
-void find_angle_V(double* tetaV, double* dtetaV, VEC3D* axis, std::vector<std::vector<double>> data)
+void find_angle_V(double* thetaV, double* dthetaV, VEC3D* axis, std::vector<std::vector<double>> data)
 {
   int V_samples = 0;
   VEC3D accV_mean;
@@ -90,11 +97,11 @@ void find_angle_V(double* tetaV, double* dtetaV, VEC3D* axis, std::vector<std::v
   normalize_vec3d(axis);
 
   /* angle */
-  double costetaV, sintetaV, errtetaV;
-  costetaV = prod_dot_3d(&acc_n, &z_axis);
-  sintetaV = ortho.mod;
-  errtetaV = 1 - costetaV * costetaV - sintetaV * sintetaV;
-  *tetaV = atan2(sintetaV, costetaV);
+  double costhetaV, sinthetaV, errthetaV;
+  costhetaV = prod_dot_3d(&acc_n, &z_axis);
+  sinthetaV = ortho.mod;
+  errthetaV = 1 - costhetaV * costhetaV - sinthetaV * sinthetaV;
+  *thetaV = atan2(sinthetaV, costhetaV);
 
   /* error */
   double x, y, z, dx, dy, dz;
@@ -107,8 +114,8 @@ void find_angle_V(double* tetaV, double* dtetaV, VEC3D* axis, std::vector<std::v
 
   double c, dc, s, ds;
 
-  c = costetaV;
-  s = sintetaV;
+  c = costhetaV;
+  s = sinthetaV;
 
   dc = (z * x * dx) * (z * x * dx) + (z * y * dy) * (z * y * dy) + (x * x + y * y) * (x * x + y * y) * dz * dz;
   dc = sqrt(dc);
@@ -118,17 +125,17 @@ void find_angle_V(double* tetaV, double* dtetaV, VEC3D* axis, std::vector<std::v
   ds = sqrt(ds);
   ds *= sqrt((x * x + y * y) / ((x * x + y * y + z * z) * (x * x + y * y + z * z) * (x * x + y * y + z * z)));
 
-  *dtetaV = s * s * dc * dc + c * c * ds * ds;
-  *dtetaV = sqrt(*dtetaV);
-  *dtetaV /= (s * s + c * c);
+  *dthetaV = s * s * dc * dc + c * c * ds * ds;
+  *dthetaV = sqrt(*dthetaV);
+  *dthetaV /= (s * s + c * c);
 
-  std::cout << "Vertical angle (deg) " << *tetaV * RAD_TO_DEG << " +- " << *dtetaV * RAD_TO_DEG << std::endl;
+  std::cout << "Vertical angle (deg) " << *thetaV * RAD_TO_DEG << " +- " << *dthetaV * RAD_TO_DEG << std::endl;
   std::cout << "Axis ( " << axis->x << " , " << axis->y << " , " << axis->z << " ) " << std::endl;
 
   return;
 }
 
-void find_angle_H(double* tetaH, double* dtetaH, std::vector<std::vector<double>> data)
+void find_angle_H(double* thetaH, double* dthetaH, std::vector<std::vector<double>> data)
 {
   int H_samples = 0;
   VEC3D accH_mean;
@@ -176,45 +183,37 @@ void find_angle_H(double* tetaH, double* dtetaH, std::vector<std::vector<double>
   std::cout << "Evaluating HORIZONTAL angle from " << H_samples << "/" << data.size() << " ( " << int(100 * H_samples / double(data.size())) << " %) samples" << std::endl;
 
   /* angle */
-  double costetaH, sintetaH, errtetaH, x, y, dx, dy;
+  double costhetaH, sinthetaH, errthetaH, x, y, dx, dy;
   x = accH_mean.x;
   y = accH_mean.y;
-  costetaH = y / sqrt(x * x + y * y); /* + < v , y > */
-  sintetaH = x / sqrt(x * x + y * y); /* - < v , x > */
-  errtetaH = 1 - costetaH * costetaH - sintetaH * sintetaH;
-  *tetaH = atan2(costetaH, sintetaH);
-  if (*tetaH < 0)
-    *tetaH += 2 * M_PI;
+  costhetaH = y / sqrt(x * x + y * y); /* + < v , y > */
+  sinthetaH = x / sqrt(x * x + y * y); /* - < v , x > */
+  errthetaH = 1 - costhetaH * costhetaH - sinthetaH * sinthetaH;
+  *thetaH = atan2(costhetaH, sinthetaH);
+  if (*thetaH < 0)
+    *thetaH += 2 * M_PI;
 
   /* error */
-  double nx, dnx, ny, dny, axy, daxy, r, dr;
+  double nx, dnx, ny, dny, axy, d_axy, r, dr;
   dx = sqrt(accH_cov.xx - x * x);
   dy = sqrt(accH_cov.yy - y * y);
   x = fabs(x);
   y = fabs(y);
   axy = sqrt(x * x + y * y);
-  daxy = (x * dx + y * dy) / axy;
+  d_axy = (x * dx + y * dy) / axy;
   nx = x / axy;
-  dnx = dx / axy + x / axy / axy * daxy;
+  dnx = dx / axy + x / axy / axy * d_axy;
   ny = y / axy;
-  dny = dy / axy + y / axy / axy * daxy;
+  dny = dy / axy + y / axy / axy * d_axy;
   r = nx / ny;
   dr = dnx / ny + nx / ny / ny * dny;
-  *dtetaH = dr / (1 + r * r);
+  *dthetaH = dr / (1 + r * r);
 
   /* output */
-  std::cout << "Horizontal angle (deg) " << *tetaH * RAD_TO_DEG << " +- " << *dtetaH * RAD_TO_DEG << std::endl;
+  std::cout << "Horizontal angle (deg) " << *thetaH * RAD_TO_DEG << " +- " << *dthetaH * RAD_TO_DEG << std::endl;
 
   return;
 }
-
-//////// MAIN
-#define MAJOR_VERSION 1
-#define MINOR_VERSION 1
-
-#define HORIZONTAL_MODE 'h'
-#define VERTICAL_MODE 'v'
-#define BOTH_MODE 'b'
 
 void usage(char* progname)
 {
@@ -249,21 +248,21 @@ int main(int argc, char** argv)
   std::vector<std::vector<double>> data = tokens_to_double(file_tokens);
 
   if (mode == HORIZONTAL_MODE) {
-    double tetaH = 0, dtetaH = 0;
+    double thetaH = 0, dthetaH = 0;
     VEC3D z_axis;
     set_vec3d(&z_axis, 0.0, 0.0, 1.0);
-    find_angle_H(&tetaH, &dtetaH, data);
+    find_angle_H(&thetaH, &dthetaH, data);
     MAT3D rotation;
-    make_rotation(&rotation, &z_axis, tetaH);
+    make_rotation(&rotation, &z_axis, thetaH);
     std::vector<std::vector<double>> data_r = rotate_inertial(data, rotation);
     std::string outfile = input_file.substr(0, input_file.size() - 4) + "_rotH.txt";
     dump_to_csv(data_r, outfile);
   } else if (mode == VERTICAL_MODE) {
-    double tetaV = 0, dtetaV = 0;
+    double thetaV = 0, dthetaV = 0;
     VEC3D axis;
-    find_angle_V(&tetaV, &dtetaV, &axis, data);
+    find_angle_V(&thetaV, &dthetaV, &axis, data);
     MAT3D rotation;
-    make_rotation(&rotation, &axis, tetaV);
+    make_rotation(&rotation, &axis, thetaV);
     std::vector<std::vector<double>> data_r = rotate_inertial(data, rotation);
     std::string outfile = input_file.substr(0, input_file.size() - 4) + "_rotV.txt";
     dump_to_csv(data_r, outfile);

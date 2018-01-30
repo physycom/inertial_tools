@@ -52,7 +52,7 @@ void usage(char* progname)
 
 int main(int argc, char** argv)
 {
-  std::cout << "Trajectoy Reconstruction 2D v" << MAJOR_VERSION << "." << MINOR_VERSION << std::endl
+  std::cout << "Trajectory Reconstruction 2D v" << MAJOR_VERSION << "." << MINOR_VERSION << std::endl
             << std::endl;
 
   std::string init_file, data_file;
@@ -206,7 +206,8 @@ set border linewidth 1.5
 # Legend
 set key top
 # Plot
-input = ")" << output << R"("
+input = ")"
+          << output << R"("
 set size 0.5, 0.5
 set origin -0.05, 0.45
 set xlabel 't'

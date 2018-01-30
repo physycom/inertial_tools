@@ -30,23 +30,23 @@ all : $(DEPS)
 all : $(EXES)
 
 openmp : foldertree
-openmp : OPT_CXX += -fopenmp 
-openmp : OPT_CC += -fopenmp 
+openmp : OPT_CXX += -fopenmp
+openmp : OPT_CC += -fopenmp
 openmp : $(LIBS)
 openmp : $(DEPS)
 openmp : $(EXES)
 
 mac-openmp : foldertree
-mac-openmp : CC = gcc-6 
-mac-openmp : CXX = g++-6 
-mac-openmp : OPT_CXX += -fopenmp 
-mac-openmp : OPT_CC += -fopenmp 
+mac-openmp : CC = gcc-6
+mac-openmp : CXX = g++-6
+mac-openmp : OPT_CXX += -fopenmp
+mac-openmp : OPT_CC += -fopenmp
 mac-openmp : $(LIBS)
 mac-openmp : $(DEPS)
 mac-openmp : $(EXES)
 
 debug : foldertree
-debug : OPT_CXX = -O0 -g -std=c++0x 
+debug : OPT_CXX = -O0 -g -std=c++0x
 debug : OPT_CC = -O0 -g
 debug : $(LIBS)
 debug : $(DEPS)
@@ -63,12 +63,10 @@ $(OBJ_FOLDER)/bbmutils.o: $(SRC_FOLDER)/libbbmutils/src/bbmutils.c
 	$(CC) $(OPT_CC) -I$(SRC_FOLDER) -c -o $@ $<
 
 $(EXE_FOLDER)/%.exe: $(SRC_FOLDER)/%.cpp
-	$(CXX) $(OPT_CXX) -I$(SRC_FOLDER)/jsoncons/include -o $@ $(DEPS) $(LIBS) $< 
+	$(CXX) $(OPT_CXX) -I$(SRC_FOLDER)/jsoncons/include -o $@ $(DEPS) $(LIBS) $<
 
 clean:
 	rm -f $(DEPS)
 
-cleanall: 
+cleanall:
 	rm -rf $(EXE_FOLDER) $(OBJ_FOLDER)
-
-

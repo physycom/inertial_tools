@@ -31,7 +31,7 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 
 //////// ANALYTICAL PARAMETRIZATION
 double T0, T1, a, R, v1, x1, yy1, omega, period, T2, x2, y2, T3, x3, y3, T4, dt;
-int NSAMPLE;
+int N_SAMPLE;
 
 void init_params()
 {
@@ -58,8 +58,8 @@ void init_params()
 
   T4 = T3 + 1.0; // s
 
-  NSAMPLE = 2000;
-  dt = (T4 - T0) / (NSAMPLE - 1.); // s
+  N_SAMPLE = 2000;
+  dt = (T4 - T0) / (N_SAMPLE - 1.); // s
 }
 
 double x(double t)
@@ -117,9 +117,9 @@ int main(int argc, char** argv)
   init_params();
 
   std::cout << "Times (s) : " << T0 << " - " << T1 << " - " << T2 << " - " << T3 << " - " << T4 << std::endl;
-  std::cout << "Nsample : " << NSAMPLE << "\tdt (s) : " << dt << std::endl;
+  std::cout << "N_sample : " << N_SAMPLE << "\tdt (s) : " << dt << std::endl;
 
-  for (int i = 0; i < NSAMPLE; i++) {
+  for (int i = 0; i < N_SAMPLE; i++) {
     t.push_back(T0 + i * dt);
     r_x.push_back(x(t[i]));
     r_y.push_back(y(t[i]));
