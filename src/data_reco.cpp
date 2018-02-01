@@ -42,11 +42,12 @@ void usage(char* progname)
   std::vector<std::string> tokens;
   boost::split(tokens, progname, boost::is_any_of("/\\"));
   std::cout << "Usage: " << tokens.back() << " init_file data_file" << std::endl;
-  std::cout << "       init_file must be a valid initial condition JSON file (launch with no arguments to create a template)" << std::endl;
-  std::cout << "       data_file must be \"inertial\" PHYSYCOM standard compliant" << std::endl
-            << std::endl;
-  std::cout << "Usage: " << progname << " -init_t" << std::endl;
-  std::cout << "       create a template init JSON file" << std::endl;
+  std::cout << "       init_file must be a valid initial condition .json file" << std::endl;
+  std::cout << "       data_file must be \"inertial\" PHYSYCOM standard compliant" << std::endl;
+  std::cout << std::endl;
+  std::cout << "Usage: " << progname << " -init" << std::endl;
+  std::cout << "       create a template init .json file" << std::endl;
+  std::cout << std::endl;
   exit(-3);
 }
 
@@ -59,19 +60,19 @@ int main(int argc, char** argv)
   if (argc == 3) {
     init_file = argv[1];
     data_file = argv[2];
-  } else if (argc == 2 && std::string(argv[1]) == "-init_t") {
-    std::cout << "Generating initial condition JSON template \"init.json\"" << std::endl
+  } else if (argc == 2 && std::string(argv[1]) == "-init") {
+    std::cout << "Generating initial condition .json template \"init.json\"" << std::endl
               << std::endl;
     std::ofstream init_json("init.json");
     init_json << R"({
-  "r0_x" : 0.0,
-  "r0_y" : 0.0,
-  "theta0" : 0.0,
-  "v0_x" : 0.0,
-  "v0_y" : 0.0,
-  "dt"   : 1e-3, // [optional] use it to force the timestamp to be exactly equally spaced
-  "acc_conversion" : [ 9.81, 9.81, 9.81],
-  "gyr_conversion" : [ 0.017453, 0.017453, 0.017453],
+  "r0_x"             : 0.0,
+  "r0_y"             : 0.0,
+  "theta0"           : 0.0,
+  "v0_x"             : 0.0,
+  "v0_y"             : 0.0,
+  "dt"               : 1e-3, // [optional] use it to force the timestamp to be exactly equally spaced
+  "acc_conversion"   : [ 9.81, 9.81, 9.81],
+  "gyr_conversion"   : [ 0.017453, 0.017453, 0.017453],
   "speed_conversion" : 0.2778
 }
 )";
@@ -206,8 +207,7 @@ set border linewidth 1.5
 # Legend
 set key top
 # Plot
-input = ")"
-          << output << R"("
+input = ")" << output << R"("
 set size 0.5, 0.5
 set origin -0.05, 0.45
 set xlabel 't'
