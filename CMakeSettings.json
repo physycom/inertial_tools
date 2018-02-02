@@ -14,7 +14,7 @@
         },
         {
           "name": "VCPKG_TARGET_TRIPLET",
-          "value": "x64-windows-physycom"
+          "value": "${env.VCPKG_DEFAULT_TRIPLET}"
         },
         {
           "name": "CMAKE_BUILD_TYPE",
@@ -35,53 +35,11 @@
         },
         {
           "name": "VCPKG_TARGET_TRIPLET",
-          "value": "x64-windows-physycom"
+          "value": "${env.VCPKG_DEFAULT_TRIPLET}"
         },
         {
           "name": "CMAKE_BUILD_TYPE",
           "value": "Debug"
-        }
-      ]
-    },
-    {
-      "buildCommandArgs": "-m -v:minimal",
-      "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\build\\${name}",
-      "configurationType": "Debug",
-      "generator": "Visual Studio 15 2017 Win64",
-      "name": "x64-Debug",
-      "variables": [
-        {
-          "name": "CMAKE_TOOLCHAIN_FILE",
-          "value": "${env.VCPKG_ROOT}\\scripts\\buildsystems\\vcpkg.cmake"
-        },
-        {
-          "name": "VCPKG_TARGET_TRIPLET",
-          "value": "x64-windows-physycom"
-        },
-        {
-          "name": "CMAKE_BUILD_TYPE",
-          "value": "Debug"
-        }
-      ]
-    },
-    {
-      "buildCommandArgs": "-m -v:minimal",
-      "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\build\\${name}",
-      "configurationType": "Release",
-      "generator": "Visual Studio 15 2017 Win64",
-      "name": "x64-Release",
-      "variables": [
-        {
-          "name": "CMAKE_TOOLCHAIN_FILE",
-          "value": "${env.VCPKG_ROOT}\\scripts\\buildsystems\\vcpkg.cmake"
-        },
-        {
-          "name": "VCPKG_TARGET_TRIPLET",
-          "value": "x64-windows-physycom"
-        },
-        {
-          "name": "CMAKE_BUILD_TYPE",
-          "value": "Release"
         }
       ]
     }
