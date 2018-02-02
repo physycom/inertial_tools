@@ -1,10 +1,13 @@
 cmake_minimum_required (VERSION 3.1)
 project (inertial_tools)
-set (CMAKE_CXX_STANDARD 11)
 
-if(VCPKG_CHAINLOAD_TOOLCHAIN_FILE)
-    include("${VCPKG_CHAINLOAD_TOOLCHAIN_FILE}")
+if (EXISTS "$ENV{WORKSPACE}/sysconfig/cmake/physycom_config.cmake")
+   message(STATUS "Enabling physycom settings")
+   include("$ENV{WORKSPACE}/sysconfig/cmake/physycom_config.cmake")
+else()
+   message(STATUS "Unable to find physycom settings file")
 endif()
+
 
 find_package(Boost REQUIRED)
 find_package(OpenMP)
@@ -40,3 +43,17 @@ target_link_libraries(data_rotator math_func bbmutils)
 target_link_libraries(inertial_stats math_func bbmutils)
 target_link_libraries(mutual_entropy math_func bbmutils)
 target_link_libraries(speed_compare math_func bbmutils)
+
+install (TARGETS
+    data_calibrator
+    data_filter
+    data_gen
+    data_purge
+    data_reco
+    data_rotator
+    inertial_stats
+    mutual_entropy
+    speed_compare
+    DESTINATION
+    ${CMAKE_SOURCE_DIR}/bin/
+)

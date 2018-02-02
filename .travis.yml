@@ -20,12 +20,11 @@ matrix:
     - os: linux
       compiler: clang
 
-before_install:
-
 install:
   - git clone https://github.com/physycom/sysconfig.git
-  - export SYSCONFIG_PATH=$(pwd)/sysconfig
+  - export WORKSPACE=$(pwd)
   - mkdir build && cd build
 
 script:
-  - cmake .. "-DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=${SYSCONFIG_PATH}/cmake/physycom_toolchain.cmake" && cmake --build .
+  - cmake ..
+  - cmake --build .

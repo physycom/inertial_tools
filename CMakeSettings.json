@@ -6,63 +6,40 @@
       "generator": "Ninja",
       "configurationType": "Release",
       "inheritEnvironments": [ "msvc_x64" ],
-      "name": "x64-Ninja-static-Release",
+      "name": "x64-Ninja-Release",
       "variables": [
         {
           "name": "CMAKE_TOOLCHAIN_FILE",
-          "value": "${env.WORKSPACE}\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake"
+          "value": "${env.VCPKG_ROOT}\\scripts\\buildsystems\\vcpkg.cmake"
         },
         {
           "name": "VCPKG_TARGET_TRIPLET",
-          "value": "x64-windows-static"
+          "value": "${env.VCPKG_DEFAULT_TRIPLET}"
         },
         {
-          "name": "VCPKG_CHAINLOAD_TOOLCHAIN_FILE",
-          "value": "${env.WORKSPACE}\\sysconfig\\cmake\\physycom_toolchain.cmake"
+          "name": "CMAKE_BUILD_TYPE",
+          "value": "Release"
         }
       ]
     },
     {
-      "buildCommandArgs": "-m -v:minimal",
       "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\build\\${name}",
-      "cmakeCommandArgs": "-A x64",
+      "generator": "Ninja",
       "configurationType": "Debug",
-      "generator": "Visual Studio 15 2017",
-      "name": "x64-static-Debug",
+      "inheritEnvironments": [ "msvc_x64" ],
+      "name": "x64-Ninja-Debug",
       "variables": [
         {
           "name": "CMAKE_TOOLCHAIN_FILE",
-          "value": "${env.WORKSPACE}\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake"
+          "value": "${env.VCPKG_ROOT}\\scripts\\buildsystems\\vcpkg.cmake"
         },
         {
           "name": "VCPKG_TARGET_TRIPLET",
-          "value": "x64-windows-static"
+          "value": "${env.VCPKG_DEFAULT_TRIPLET}"
         },
         {
-          "name": "VCPKG_CHAINLOAD_TOOLCHAIN_FILE",
-          "value": "${env.WORKSPACE}\\sysconfig\\cmake\\physycom_toolchain.cmake"
-        }
-      ]
-    },
-    {
-      "buildCommandArgs": "-m -v:minimal",
-      "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\build\\${name}",
-      "cmakeCommandArgs": "-A x64",
-      "configurationType": "Release",
-      "generator": "Visual Studio 15 2017",
-      "name": "x64-static-Release",
-      "variables": [
-        {
-          "name": "CMAKE_TOOLCHAIN_FILE",
-          "value": "${env.WORKSPACE}\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake"
-        },
-        {
-          "name": "VCPKG_TARGET_TRIPLET",
-          "value": "x64-windows-static"
-        },
-        {
-          "name": "VCPKG_CHAINLOAD_TOOLCHAIN_FILE",
-          "value": "${env.WORKSPACE}\\sysconfig\\cmake\\physycom_toolchain.cmake"
+          "name": "CMAKE_BUILD_TYPE",
+          "value": "Debug"
         }
       ]
     }
