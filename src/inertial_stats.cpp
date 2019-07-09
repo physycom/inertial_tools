@@ -31,8 +31,8 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #include "jsoncons/json.hpp"
 #include "libbbmutils/bbmutils.h"
 
-#define MAJOR_VERSION 0
-#define MINOR_VERSION 3
+#define MAJOR_VERSION 1
+#define MINOR_VERSION 0
 
 typedef double math_float;
 
@@ -67,6 +67,10 @@ int main(int argc, char** argv)
   std::vector<std::vector<double>> data = tokens_to_double(file_tokens);
   std::vector<double> ax, ay, az, gx, gy, gz;
   for (auto line : data) {
+    if( line.size() != COLUMN_NUMBER ){
+      std::cerr << "Line size mismatch " << line.size() << " vs " << COLUMN_NUMBER << std::endl;
+      continue;
+    }
     ax.push_back(line[AX_INDEX]);
     ay.push_back(line[AY_INDEX]);
     az.push_back(line[AZ_INDEX]);
@@ -79,26 +83,32 @@ int main(int argc, char** argv)
   auto ax_mm = std::minmax_element(ax.begin(), ax.end());
   double ax_min = *ax_mm.first;
   double ax_max = *ax_mm.second;
+  std::cout << "Range ACC_X : " << ax_min << " " << ax_max << std::endl;
 
   auto ay_mm = std::minmax_element(ay.begin(), ay.end());
   double ay_min = *ay_mm.first;
   double ay_max = *ay_mm.second;
+  std::cout << "Range ACC_Y : " << ay_min << " " << ay_max << std::endl;
 
   auto az_mm = std::minmax_element(az.begin(), az.end());
   double az_min = *az_mm.first;
   double az_max = *az_mm.second;
+  std::cout << "Range ACC_Z : " << az_min << " " << az_max << std::endl;
 
   auto gx_mm = std::minmax_element(gx.begin(), gx.end());
   double gx_min = *gx_mm.first;
   double gx_max = *gx_mm.second;
+  std::cout << "Range GYR_X : " << gx_min << " " << gx_max << std::endl;
 
   auto gy_mm = std::minmax_element(gy.begin(), gy.end());
   double gy_min = *gy_mm.first;
   double gy_max = *gy_mm.second;
+  std::cout << "Range GYR_Y : " << gy_min << " " << gy_max << std::endl;
 
   auto gz_mm = std::minmax_element(gz.begin(), gz.end());
   double gz_min = *gz_mm.first;
   double gz_max = *gz_mm.second;
+  std::cout << "Range GYR_Z : " << gz_min << " " << gz_max << std::endl;
 
   // Evaluating statistics
   VEC3D ave_acc, ave_gyr;

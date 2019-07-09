@@ -31,6 +31,8 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #define A_MOD_INDEX 8
 #define TIMES_REL_INDEX 9
 
+#define COLUMN_NUMBER 10
+
 // conversion
 #define RAD_TO_DEG (180. / M_PI)
 #define GRAV 9.81

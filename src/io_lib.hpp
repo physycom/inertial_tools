@@ -48,7 +48,7 @@ std::vector<std::vector<std::string>> Read_from_file(std::string file_name)
     tokens.clear();
     std::getline(data_file, line);
     if (line.size() > 0) {
-      boost::algorithm::split(tokens, line, boost::algorithm::is_any_of("\t"));
+      boost::algorithm::split(tokens, line, boost::algorithm::is_any_of("\t "), boost::token_compress_on);
       if (tokens[0].at(0) == '#')
         continue;
       else
@@ -95,9 +95,8 @@ void dump_to_csv(std::vector<std::vector<double>> data, std::string filename)
 
   for (size_t i = 0; i < data.size(); i++) {
     for (size_t j = 0; j < data[i].size(); j++) {
-      output << std::fixed << std::setprecision(3) << std::setw(7) << data[i][j] << '\t';
+      output << std::fixed << std::setprecision(3) << data[i][j] << ( (j == data[i].size() - 1) ? '\n' : '\t' );
     }
-    output << std::endl;
   }
   output.close();
 
