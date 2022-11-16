@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 ***************************************************************************/
 
-#include "libbbmutils/bbmutils.h"
+#include <bbmutils.h>
 #include <vector>
 
 std::vector<double> Integrate(std::vector<double>& x, std::vector<double>& f, double F0 = 0);

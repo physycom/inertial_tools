@@ -28,7 +28,7 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #include <boost/utility.hpp>
 
 // jsoncons include
-#include "jsoncons/json.hpp"
+#include <jsoncons/json.hpp>
 
 #include "io_lib.hpp"
 #include "math_func.h"

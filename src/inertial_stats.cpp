@@ -28,8 +28,8 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #include <vector>
 
 #include "io_lib.hpp"
-#include "jsoncons/json.hpp"
-#include "libbbmutils/bbmutils.h"
+#include <jsoncons/json.hpp>
+#include <bbmutils.h>
 
 #define MAJOR_VERSION 1
 #define MINOR_VERSION 0

@@ -23,7 +23,7 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #include <vector>
 
 #include "io_lib.hpp"
-#include "libbbmutils/bbmutils.h"
+#include <bbmutils.h>
 #include "math_func.h"
 #include "params.h"
 

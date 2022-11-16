@@ -1,0 +1,10 @@
+{
+  "registries": [
+    {
+      "kind": "git",
+      "repository": "https://github.com/physycom/vcpkg-registry",
+      "baseline": "ad239be85949ab3f965e257f7449cd688040896c",
+      "packages": [ "bbmutils" ]
+    }
+  ]
+}

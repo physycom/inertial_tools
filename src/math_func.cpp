@@ -20,7 +20,7 @@ along with Inertial Analysis. If not, see <http://www.gnu.org/licenses/>.
 #include <cstddef>
 #include <vector>
 
-#include "libbbmutils/bbmutils.h"
+#include <bbmutils.h>
 #include "math_func.h"
 #include "params.h"
 

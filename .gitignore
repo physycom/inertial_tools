@@ -1,68 +1,31 @@
+# Copyright 2019, Stefano Sinigardi
 
-#VS Code
+*.o
+*.a
+*.dSYM
+*.so
+*.exe
+*.dll
+*.lib
+data/
+build*/
+vcpkg_installed/
+vcpkg/
+build.log
+
+# OS Generated #
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
+*.swp
+
+# IDE generated #
 .vs/
 .vscode/
 
-# Windows image file caches
-Thumbs.db
-ehthumbs.db
-
-# Folder config file
-Desktop.ini
-
-# Mac desktop service store files
-.DS_Store
-
-# Object files
-*.slo
-*.lo
-*.o
-*.out
-*.ko
-*.obj
-*.elf
-*.exe
-
-# Libraries
-*.lib
-*.a
-*.la
-*.lai
-*.lo
-
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
-
-
-# QtCreator
-*.autosave
-*.config
-*.creator
-*.creator.user
-*.opendb
-*.iobj
-*.ipdb
-*.db
-
-
-# Build results
-[Dd]ebug/
-[Dd]ebugPublic/
-[Rr]elease/
-x64/
-[Bb]uild*/
-bld/
-[Bb]in/
-[Oo]bj/
-*.pdf
+# Build artifacts
+bin/
+include/
+share/
+lib/

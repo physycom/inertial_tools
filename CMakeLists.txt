@@ -1,59 +1,74 @@
 cmake_minimum_required (VERSION 3.1)
+
+if(DEFINED ENV{VCPKG_DEFAULT_TRIPLET})
+  message(STATUS "Setting default vcpkg target triplet to $ENV{VCPKG_DEFAULT_TRIPLET}")
+  set(VCPKG_TARGET_TRIPLET $ENV{VCPKG_DEFAULT_TRIPLET})
+endif()
+
+if(DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+  set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
+  message(STATUS "VCPKG found: $ENV{VCPKG_ROOT}")
+  message(STATUS "Using VCPKG integration")
+  message(STATUS "VCPKG_MANIFEST_FEATURES: ${VCPKG_MANIFEST_FEATURES}")
+elseif(DEFINED CMAKE_TOOLCHAIN_FILE)
+  message(STATUS "Using toolchain: ${CMAKE_TOOLCHAIN_FILE}")
+  if(CMAKE_TOOLCHAIN_FILE MATCHES "vcpkg.cmake")
+    message(STATUS "Toolchain uses VCPKG integration")
+    message(STATUS "VCPKG_MANIFEST_FEATURES: ${VCPKG_MANIFEST_FEATURES}")
+  endif()
+else()
+  message(WARNING "vcpkg not found, toolchain not defined, build might fail")
+endif()
+
 project (inertial_tools)
 
-if (EXISTS "$ENV{WORKSPACE}/sysconfig/cmake/physycom_config.cmake")
-   message(STATUS "Enabling physycom settings")
-   include("$ENV{WORKSPACE}/sysconfig/cmake/physycom_config.cmake")
-else()
-   message(STATUS "Unable to find physycom settings file")
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_LIST_DIR}" CACHE PATH "Install prefix" FORCE)
 endif()
 
+set(INSTALL_BIN_DIR      "bin"                     CACHE PATH "Path where exe and dll will be installed")
+set(INSTALL_LIB_DIR      "lib"                     CACHE PATH "Path where lib will be installed")
+set(INSTALL_INCLUDE_DIR  "include"                 CACHE PATH "Path where headers will be installed")
+set(INSTALL_CMAKE_DIR    "share/${PROJECT_NAME}"   CACHE PATH "Path where cmake configs will be installed")
 
 find_package(Boost REQUIRED)
-find_package(OpenMP)
-if (OPENMP_FOUND)
-    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+find_package(OpenMP REQUIRED)
+find_package(jsoncons REQUIRED)
+find_package(BBMUtils REQUIRED)
+
+add_library(math_func ${CMAKE_CURRENT_LIST_DIR}/src/math_func.cpp)
+target_link_libraries(math_func BBMUtils::bbmutils OpenMP::OpenMP_CXX)
+
+add_executable(data_calibrator ${CMAKE_CURRENT_LIST_DIR}/src/data_calibrator.cpp)
+add_executable(data_filter ${CMAKE_CURRENT_LIST_DIR}/src/data_filter.cpp)
+add_executable(data_gen ${CMAKE_CURRENT_LIST_DIR}/src/data_gen.cpp)
+add_executable(data_purge ${CMAKE_CURRENT_LIST_DIR}/src/data_purge.cpp)
+add_executable(data_reco ${CMAKE_CURRENT_LIST_DIR}/src/data_reco.cpp)
+add_executable(data_rotator ${CMAKE_CURRENT_LIST_DIR}/src/data_rotator.cpp)
+add_executable(inertial_stats ${CMAKE_CURRENT_LIST_DIR}/src/inertial_stats.cpp)
+add_executable(mutual_entropy ${CMAKE_CURRENT_LIST_DIR}/src/mutual_entropy.cpp)
+add_executable(speed_compare ${CMAKE_CURRENT_LIST_DIR}/src/speed_compare.cpp)
+
+if(MSVC)
+  target_compile_definitions(data_calibrator PRIVATE _CRT_SECURE_NO_WARNINGS)
+  target_compile_definitions(data_filter PRIVATE _CRT_SECURE_NO_WARNINGS)
+  target_compile_definitions(data_gen PRIVATE _CRT_SECURE_NO_WARNINGS)
+  target_compile_definitions(data_purge PRIVATE _CRT_SECURE_NO_WARNINGS)
+  target_compile_definitions(data_reco PRIVATE _CRT_SECURE_NO_WARNINGS)
+  target_compile_definitions(data_rotator PRIVATE _CRT_SECURE_NO_WARNINGS)
+  target_compile_definitions(inertial_stats PRIVATE _CRT_SECURE_NO_WARNINGS)
+  target_compile_definitions(mutual_entropy PRIVATE _CRT_SECURE_NO_WARNINGS)
+  target_compile_definitions(speed_compare PRIVATE _CRT_SECURE_NO_WARNINGS)
 endif()
 
+target_link_libraries(data_calibrator math_func Boost::boost BBMUtils::bbmutils OpenMP::OpenMP_CXX)
+target_link_libraries(data_filter math_func Boost::boost BBMUtils::bbmutils OpenMP::OpenMP_CXX)
+target_link_libraries(data_gen math_func Boost::boost BBMUtils::bbmutils OpenMP::OpenMP_CXX)
+target_link_libraries(data_purge math_func Boost::boost BBMUtils::bbmutils OpenMP::OpenMP_CXX)
+target_link_libraries(data_reco math_func Boost::boost BBMUtils::bbmutils OpenMP::OpenMP_CXX)
+target_link_libraries(data_rotator math_func Boost::boost BBMUtils::bbmutils OpenMP::OpenMP_CXX)
+target_link_libraries(inertial_stats math_func Boost::boost BBMUtils::bbmutils OpenMP::OpenMP_CXX)
+target_link_libraries(mutual_entropy math_func Boost::boost BBMUtils::bbmutils OpenMP::OpenMP_CXX)
+target_link_libraries(speed_compare math_func Boost::boost BBMUtils::bbmutils OpenMP::OpenMP_CXX)
 
-set(LIBBBMUTILS_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src)
-set(JSONCONS_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/jsoncons/include)
-
-include_directories(${JSONCONS_INCLUDE_DIR} ${LIBBBMUTILS_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
-add_library(math_func ${CMAKE_SOURCE_DIR}/src/math_func.cpp)
-add_library(bbmutils ${CMAKE_SOURCE_DIR}/src/libbbmutils/src/bbmutils.c)
-
-add_executable(data_calibrator ${CMAKE_SOURCE_DIR}/src/data_calibrator.cpp)
-add_executable(data_filter ${CMAKE_SOURCE_DIR}/src/data_filter.cpp)
-add_executable(data_gen ${CMAKE_SOURCE_DIR}/src/data_gen.cpp)
-add_executable(data_purge ${CMAKE_SOURCE_DIR}/src/data_purge.cpp)
-add_executable(data_reco ${CMAKE_SOURCE_DIR}/src/data_reco.cpp)
-add_executable(data_rotator ${CMAKE_SOURCE_DIR}/src/data_rotator.cpp)
-add_executable(inertial_stats ${CMAKE_SOURCE_DIR}/src/inertial_stats.cpp)
-add_executable(mutual_entropy ${CMAKE_SOURCE_DIR}/src/mutual_entropy.cpp)
-add_executable(speed_compare ${CMAKE_SOURCE_DIR}/src/speed_compare.cpp)
-
-target_link_libraries(data_calibrator math_func bbmutils)
-target_link_libraries(data_filter math_func bbmutils)
-target_link_libraries(data_gen math_func bbmutils)
-target_link_libraries(data_purge math_func bbmutils)
-target_link_libraries(data_reco math_func bbmutils)
-target_link_libraries(data_rotator math_func bbmutils)
-target_link_libraries(inertial_stats math_func bbmutils)
-target_link_libraries(mutual_entropy math_func bbmutils)
-target_link_libraries(speed_compare math_func bbmutils)
-
-install (TARGETS
-    data_calibrator
-    data_filter
-    data_gen
-    data_purge
-    data_reco
-    data_rotator
-    inertial_stats
-    mutual_entropy
-    speed_compare
-    DESTINATION
-    ${CMAKE_SOURCE_DIR}/bin/
-)
+install (TARGETS data_calibrator data_filter data_gen data_purge data_reco data_rotator inertial_stats mutual_entropy speed_compare DESTINATION "${INSTALL_BIN_DIR}")
