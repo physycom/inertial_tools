@@ -9,11 +9,8 @@ author: "Fabbri, Sinigardi"
 <img src="https://cdn.rawgit.com/physycom/templates/697b327d/logo_unibo.png" width="90" height="90" alt="© Physics of Complex Systems Laboratory - Physics and Astronomy Department - University of Bologna">
 </div>
 </a>
-<a href="https://travis-ci.com/physycom/inertial_tools">
-<div class="image">
-<img src="https://travis-ci.com/physycom/inertial_tools.svg?token=ujjUseBa9hYbKckXBkxJ&branch=master" width="90" height="20" alt="Build Status">
-</div>
-</a>
+
+[![Physycom Continuous Integration](https://github.com/physycom/inertial_tools/actions/workflows/ccpp.yml/badge.svg)](https://github.com/physycom/inertial_tools/actions/workflows/ccpp.yml)
 
 # Inertial tools
 
@@ -91,11 +88,9 @@ This suite has been developed by the Physics of the City laboratory, Physics and
 
 **CMake**, **boost** and a **C++11** compatible compiler are required. To build the executable, clone the repository and then type
 
-```bash
-mkdir build ; cd build ; cmake .. ; cmake --build . --target install
+```pwsh
+./ci/build.ps1 -UseVCPKG
 ```
-
-With CMake you can also deploy projects for the most common IDEs.
 
 Every tool of the suite provides its own _synopsis_ when run on a terminal.
 
