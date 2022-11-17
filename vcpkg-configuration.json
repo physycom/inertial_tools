@@ -3,7 +3,7 @@
     {
       "kind": "git",
       "repository": "https://github.com/physycom/vcpkg-registry",
-      "baseline": "ad239be85949ab3f965e257f7449cd688040896c",
+      "baseline": "ceabea13de0844c5de44e9c8a84fb90a150fc36f",
       "packages": [ "bbmutils" ]
     }
   ]
