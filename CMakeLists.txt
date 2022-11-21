@@ -22,6 +22,8 @@ endif()
 
 project (inertial_tools)
 
+set (CMAKE_CXX_STANDARD 14)
+
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_LIST_DIR}" CACHE PATH "Install prefix" FORCE)
 endif()
